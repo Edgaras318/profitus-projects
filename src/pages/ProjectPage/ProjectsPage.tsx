@@ -37,7 +37,10 @@ export default function ProjectsPage() {
 
     return (
         <div className={styles.wrapper}>
-            <h2>Projects</h2>
+            <header className={styles.header}>
+                <h1>Investavimo galimybės užtikrintos nekilnojamuoju turtu</h1>
+                <button className={styles.filterButton}>Filtruoti</button>
+            </header>
 
             {/* Filter (country) */}
             <label>
