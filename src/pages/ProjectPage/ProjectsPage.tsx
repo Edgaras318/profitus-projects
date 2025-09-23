@@ -2,6 +2,9 @@ import { useProjects } from "@/hooks/useProjects.ts";
 import { toggleSort } from "@/utils/queryHelpers.ts";
 import type { ProjectCardResponse } from "@/types/project.types.ts";
 import styles from './ProjectsPage.module.scss'
+import FilterBar from "@/components/FilterBar/FilterBar";
+
+
 export default function ProjectsPage() {
     const {
         data,
@@ -39,27 +42,34 @@ export default function ProjectsPage() {
         <div className={styles.wrapper}>
             <header className={styles.header}>
                 <h1>Investavimo galimybės užtikrintos nekilnojamuoju turtu</h1>
-                <button className={styles.filterButton}>Filtruoti</button>
+                <FilterBar>
+                    <div className={styles.filters}>
+                        <label>
+                            Country:
+                            <select
+                                onChange={(e) => handleFilterCountry(e.target.value)}
+                                value={String(
+                                    params.filters.find((f) => f.id === "country")?.value ?? ""
+                                )}
+                            >
+                                <option value="">All</option>
+                                <option value="lt">LT</option>
+                                <option value="ee">EE</option>
+                                <option value="es">ES</option>
+                                <option value="lv">LV</option>
+                            </select>
+                        </label>
+
+                        <button onClick={resetFilters} className={styles.resetButton}>
+                            Reset Filters
+                        </button>
+                    </div>
+                </FilterBar>
             </header>
 
-            {/* Filter (country) */}
-            <label>
-                Country:
-                <select
-                    onChange={(e) => handleFilterCountry(e.target.value)}
-                    value={
-                        String(params.filters.find(f => f.id === "country")?.value ?? "")
-                    }
-                >
-                    <option value="">All</option>
-                    <option value="lt">LT</option>
-                    <option value="ee">EE</option>
-                    <option value="es">ES</option>
-                    <option value="lv">LV</option>
-                </select>
-            </label>
 
-            <button onClick={resetFilters}>Reset Filters</button>
+
+
 
             {/* Sorting */}
             <div>

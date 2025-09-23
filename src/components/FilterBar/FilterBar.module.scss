@@ -1,0 +1,118 @@
+.wrapper {
+  width: 100%;
+}
+
+.toggleButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: #d1d5db;
+    background-color: #f9fafb;
+  }
+}
+
+.labelWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+}
+
+.label {
+  font-weight: 500;
+}
+
+.chevron {
+  width: 20px;
+  height: 20px;
+  color: #a855f7;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.open {
+  transform: rotate(0deg);
+}
+
+.content {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #f3f4f6;
+  border-radius: 1rem;
+  background: #f9fafb;
+}
+
+.placeholderGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.placeholderItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.placeholderLabel {
+  width: 6rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: #e5e7eb;
+}
+
+.placeholderInput {
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.resetButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.applyButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #a855f7;
+  color: #ffffff;
+  cursor: pointer;
+
+  &:hover {
+    background: #9333ea;
+  }
+}
