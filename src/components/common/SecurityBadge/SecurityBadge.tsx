@@ -1,5 +1,3 @@
-
-import React from 'react';
 import type { SecurityMeasuresEnum } from '@/types/project.types';
 import styles from './SecurityBadge.module.scss';
 
