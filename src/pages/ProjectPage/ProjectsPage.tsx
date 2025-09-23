@@ -1,7 +1,7 @@
-import { useProjects } from "@/hooks/useProjects";
-import { toggleSort } from "@/utils/queryHelpers";
-import type { ProjectCardResponse } from "@/types/project.types";
-
+import { useProjects } from "@/hooks/useProjects.ts";
+import { toggleSort } from "@/utils/queryHelpers.ts";
+import type { ProjectCardResponse } from "@/types/project.types.ts";
+import styles from './ProjectsPage.module.scss'
 export default function ProjectsPage() {
     const {
         data,
@@ -36,7 +36,7 @@ export default function ProjectsPage() {
     if (!data || data.length === 0) return <p>No projects found</p>;
 
     return (
-        <div>
+        <div className={styles.wrapper}>
             <h2>Projects</h2>
 
             {/* Filter (country) */}
@@ -69,7 +69,8 @@ export default function ProjectsPage() {
             <ul>
                 {data.map((project: ProjectCardResponse) => (
                     <li key={project.pid}>
-                        <strong>{project.project_name}</strong> — {project.status} — {project.basic_interest}% — {project.initial_rating}
+                        <strong>{project.project_name}</strong> — {project.status} — {project.basic_interest}%
+                        — {project.initial_rating}
                     </li>
                 ))}
             </ul>
@@ -79,7 +80,8 @@ export default function ProjectsPage() {
                 <div>
                     <button disabled={params.page === 1} onClick={() => setPage(params.page - 1)}>Prev</button>
                     <span>Page {meta.current_page} / {meta.last_page}</span>
-                    <button disabled={params.page >= meta.last_page} onClick={() => setPage(params.page + 1)}>Next</button>
+                    <button disabled={params.page >= meta.last_page} onClick={() => setPage(params.page + 1)}>Next
+                    </button>
                 </div>
             )}
 

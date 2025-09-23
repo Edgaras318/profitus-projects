@@ -1,10 +1,9 @@
-import ProjectsPage from "@/pages/ProjectsPage.tsx";
+import ProjectsPage from "@/pages/ProjectPage/ProjectsPage.tsx";
 
 function App() {
 
   return (
     <>
-      <p>Hello world</p>
         <ProjectsPage/>
     </>
   )
