@@ -1,0 +1,67 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressBar {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 60px;
+  flex: 1;
+  height: 8px;
+}
+
+.progress {
+  background: linear-gradient(90deg, #E91E63, #F8BBD9);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  min-width: 2px;
+  height: 100%;
+}
+
+.label {
+  color: #E91E63;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Circular Progress Bar */
+.circularContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circularProgress {
+  transform: rotate(-90deg);
+}
+
+.circularTrack {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 4;
+}
+
+.circularBar {
+  fill: none;
+  stroke: #E91E63;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.circularLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: #E91E63;
+  text-align: center;
+}
