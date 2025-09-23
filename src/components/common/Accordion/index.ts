@@ -2,9 +2,11 @@ export {
     Accordion,
     AccordionItem,
     AccordionHeader,
-    AccordionContent,
-    useAccordion
+    AccordionContent
 } from './Accordion';
+
+export { useAccordion } from "./useAccordion";
+export { AccordionContext } from "./AccordionContext";
 
 export type {
     AccordionProps,

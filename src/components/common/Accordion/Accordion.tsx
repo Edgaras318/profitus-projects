@@ -1,17 +1,18 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Plus, Minus, ChevronUp } from 'lucide-react';
 import styles from './Accordion.module.scss';
+import { AccordionContext } from "./AccordionContext";
 
 // Types
 export type AccordionContextType = {
     activeItems: number[];
     toggleItem: (index: number) => void;
-    multiple: boolean;
+    multiple?: boolean;
 };
 
 export type AccordionProps = {
     children: React.ReactNode;
-    multiple?: boolean;
+    multiple: boolean;
     defaultActiveIndex?: number | number[] | null;
     className?: string;
 };
@@ -35,8 +36,6 @@ export type AccordionContentProps = {
     className?: string;
 };
 
-// Create context with default values
-const AccordionContext = createContext<AccordionContextType | undefined>(undefined);
 
 // Main Accordion Component
 export function Accordion({
@@ -46,7 +45,7 @@ export function Accordion({
                               className = ""
                           }: AccordionProps) {
     const [activeItems, setActiveItems] = useState<number[]>(() => {
-        if (defaultActiveIndex === null) {
+        if (defaultActiveIndex === null || defaultActiveIndex === undefined) {
             return [];
         }
         if (Array.isArray(defaultActiveIndex)) {
@@ -177,13 +176,4 @@ export function AccordionContent({
             </div>
         </div>
     );
-}
-
-// Export hook to use accordion context
-export function useAccordion() {
-    const context = useContext(AccordionContext);
-    if (!context) {
-        throw new Error('useAccordion must be used within an Accordion component');
-    }
-    return context;
 }
