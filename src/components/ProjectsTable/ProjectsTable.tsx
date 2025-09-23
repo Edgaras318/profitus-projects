@@ -1,16 +1,16 @@
-import React from 'react';
+
 import Button from '@/components/common/Button/Button';
 import ProgressBar from '@/components/common/ProgressBar/ProgressBar';
 import Rating from '@/components/common/Rating/Rating';
 import CountryFlag from '@/components/common/CountryFlag/CountryFlag';
 import SecurityBadge from '@/components/common/SecurityBadge/SecurityBadge';
 import type { ProjectCardResponse } from '@/types/project.types';
-import type { SortInput } from '@/types/project.api.types';
+import type { SortInput, SortId } from '@/types/project.api.types';
 import styles from './ProjectsTable.module.scss';
 
 interface ProjectsTableProps {
     projects: ProjectCardResponse[];
-    onSort?: (column: string) => void;
+    onSort?: (column: SortId) => void;
     currentSort?: SortInput[];
 }
 
@@ -44,7 +44,7 @@ export default function ProjectsTable({
         return sortItem.desc ? '↓' : '↑';
     };
 
-    const handleHeaderClick = (column: string) => {
+    const handleHeaderClick = (column: SortId) => {
         if (onSort) {
             onSort(column);
         }
