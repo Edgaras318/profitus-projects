@@ -1,0 +1,47 @@
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #2d1b69;
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  input {
+    display: none;
+  }
+}
+
+.box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #7c6aa6; // light purple border
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.checked {
+  border-color: #0c009b;
+  background-color: #fff;
+}
+
+.tick {
+  width: 14px;
+  height: 14px;
+  stroke: #e6007e;
+  stroke-width: 3;
+  fill: none;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+}
+
+.label {
+  user-select: none;
+}
