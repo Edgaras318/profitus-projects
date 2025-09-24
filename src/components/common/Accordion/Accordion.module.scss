@@ -24,7 +24,7 @@
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #374151;
   transition: background-color 0.2s ease;
   position: relative; // Important for z-index stacking
@@ -54,8 +54,8 @@
 
 .title {
   text-align: left;
-  font-weight: 500;
-  color: #374151;
+  font-weight: 600;
+  color: #1f2937;
 }
 
 .selectedItems {
@@ -87,7 +87,7 @@
 }
 
 .icon {
-  color: #6b7280;
+  color: #374151;
   display: flex;
   align-items: center;
   flex-shrink: 0;
