@@ -127,13 +127,12 @@ export default function ProjectsTable({
         const sortItem = currentSort!.find(s => s.id === column);
 
         if (!sortItem) {
-            // unsorted → neutral up/down icon
             return <ArrowUpDown size={14} aria-hidden="true" />;
         }
 
         return sortItem.desc
-            ? <ArrowDown className={'sortActiveIcon'} size={14} aria-hidden="true" />
-            : <ArrowUp size={14} aria-hidden="true" />;
+            ? <ArrowDown className={styles.sortActiveColor} size={14} aria-hidden="true" />
+            : <ArrowUp className={styles.sortActiveColor} size={14} aria-hidden="true" />;
     };
 
 

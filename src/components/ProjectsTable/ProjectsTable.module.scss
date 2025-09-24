@@ -359,7 +359,7 @@
   align-items: center;
   gap: 0.25rem;
   font: inherit;
-  color: #E91E63;
+  color: inherit;
 
   svg {
     opacity: 0.6;
@@ -371,3 +371,6 @@
   }
 }
 
+.sortActiveColor {
+  color: #E91E63;
+}
