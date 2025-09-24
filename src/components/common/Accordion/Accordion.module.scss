@@ -2,12 +2,12 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #ffffff;
-  overflow: visible; // Changed from 'hidden' to 'visible' to allow dropdowns
+  overflow: visible;
 }
 
 .item {
   border-bottom: 1px solid #e5e7eb;
-  overflow: visible; // Allow dropdowns to extend outside
+  overflow: visible;
 
   &:last-child {
     border-bottom: none;
@@ -27,13 +27,13 @@
   font-weight: 600;
   color: #374151;
   transition: background-color 0.2s ease;
-  position: relative; // Important for z-index stacking
+  position: relative;
 
   &:hover {
     background-color: #f9fafb;
   }
 
-  // Highlight headers with selections
+
   &.hasSelections {
     background-color: #fefbf3;
     border-left: 3px solid #f59e0b;
@@ -83,7 +83,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0 0.25rem;
-  z-index: 10; // Ensure badge appears above other elements
+  z-index: 10;
 }
 
 .icon {
@@ -103,10 +103,9 @@
 }
 
 .content {
-  overflow: visible; // Changed from 'hidden' to 'visible'
+  overflow: visible;
   animation: slideDown 0.2s ease-out;
-  position: relative; // Establish stacking context
-  z-index: 1; // Lower than dropdowns but above other content
+  position: relative;
 }
 
 @keyframes slideDown {
@@ -139,12 +138,10 @@
   }
 }
 
-// Ensure parent containers allow overflow
 .accordion-container {
   overflow: visible !important;
 }
 
-// Fix for any parent containers that might clip dropdowns
 :global(.filter-container) {
   overflow: visible !important;
 }
