@@ -11,13 +11,26 @@ import {
     AccordionContent
 } from "@/components/common/Accordion/Accordion";
 import Checkbox from "@/components/common/Checkbox/Checkbox";
-import type { FilterInput } from "@/types/project.api.types";
 import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
 import Select from "@/components/common/Select/Select";
 import InputText from "@/components/common/InputText/InputText";
 import InputNumber from "@/components/common/InputNumber/InputNumber";
 import Button from "@/components/common/Button/Button.tsx";
 import { X, Search, Hash } from 'lucide-react';
+import type { TempFilters } from '@/types/projectFilters.types';
+import { getEmptyTempFilters } from '@/types/projectFilters.types';
+import {
+    RATING_OPTIONS,
+    COUNTRY_OPTIONS,
+    PURPOSE_OPTIONS,
+    ITEMS_PER_PAGE_OPTIONS,
+    FILTER_ACCORDION_STORAGE_KEY
+} from '@/constants/projectFilters';
+import {
+    buildFiltersFromTemp,
+    parseTempFiltersFromParams,
+    getActiveAccordionItems
+} from '@/utils/filterHelpers';
 
 export default function ProjectsPage() {
     const {
@@ -33,103 +46,33 @@ export default function ProjectsPage() {
         resetFilters,
     } = useProjects({ limit: 10 });
 
-    // Temporary state for unsaved filters
-    const [tempFilters, setTempFilters] = useState<{
-        countries: string[];
-        ratings: string[];
-        purpose: string;
-        creditDurationMin: string;
-        creditDurationMax: string;
-        campaignId: string;
-        privateId: string;
-    }>({
-        countries: [],
-        ratings: [],
-        purpose: '',
-        creditDurationMin: '',
-        creditDurationMax: '',
-        campaignId: '',
-        privateId: ''
-    });
+    const [tempFilters, setTempFilters] = useState<TempFilters>(getEmptyTempFilters());
 
-    // Track if user has manually interacted with accordions
     const [userInteracted, setUserInteracted] = useState<boolean>(() => {
-        // Check if there's saved state in localStorage
-        const savedState = localStorage.getItem('filterAccordionState');
+        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
         return savedState !== null;
     });
 
-    // Add state for accordion items with localStorage support
     const [accordionActiveItems, setAccordionActiveItems] = useState<number[]>(() => {
-        // FIRST PRIORITY: Check localStorage for user preferences
-        const savedState = localStorage.getItem('filterAccordionState');
+        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
         if (savedState) {
             try {
                 return JSON.parse(savedState);
             } catch (e) {
-                // Invalid JSON, ignore
-                localStorage.removeItem('filterAccordionState');
+                localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
             }
         }
-
-        // If no saved state, return empty array (will be calculated in useEffect)
         return [];
     });
 
-    // Initialize temp filters from current params on mount
     React.useEffect(() => {
-        const currentFilters = params.filters || [];
-        const newTempFilters = {
-            countries: [] as string[],
-            ratings: [] as string[],
-            purpose: '',
-            creditDurationMin: '',
-            creditDurationMax: '',
-            campaignId: '',
-            privateId: ''
-        };
-
-        currentFilters.forEach((filter) => {
-            if (filter.id === 'country') {
-                newTempFilters.countries = filter.value as string[];
-            } else if (filter.id === 'initial_rating') {
-                newTempFilters.ratings = filter.value as string[];
-            } else if (filter.id === 'purpose') {
-                newTempFilters.purpose = filter.value as string;
-            } else if (filter.id === 'credit_duration') {
-                const duration = filter.value as { min?: number; max?: number };
-                newTempFilters.creditDurationMin = duration.min?.toString() || '';
-                newTempFilters.creditDurationMax = duration.max?.toString() || '';
-            } else if (filter.id === 'campaign_id') {
-                newTempFilters.campaignId = filter.value as string;
-            } else if (filter.id === 'private_id') {
-                newTempFilters.privateId = filter.value as string;
-            }
-        });
-
+        const newTempFilters = parseTempFiltersFromParams(params.filters || []);
         setTempFilters(newTempFilters);
     }, [params.filters]);
 
-    // Calculate which accordions should be open based on filter values
-    // Only runs if user hasn't interacted (no localStorage)
     React.useEffect(() => {
-        // Only auto-open if user hasn't manually interacted (no localStorage)
         if (!userInteracted) {
-            const itemsToOpen: number[] = [];
-
-            // Check each filter category for values
-            if (tempFilters.countries.length > 0) itemsToOpen.push(0);
-            if (tempFilters.ratings.length > 0) itemsToOpen.push(1);
-            if (tempFilters.purpose) itemsToOpen.push(2);
-            if (tempFilters.creditDurationMin || tempFilters.creditDurationMax) itemsToOpen.push(3);
-            if (tempFilters.campaignId) itemsToOpen.push(4);
-            if (tempFilters.privateId) itemsToOpen.push(5);
-
-            // If no filters have values, open the first accordion by default
-            if (itemsToOpen.length === 0) {
-                itemsToOpen.push(0);
-            }
-
+            const itemsToOpen = getActiveAccordionItems(tempFilters);
             setAccordionActiveItems(itemsToOpen);
         }
     }, [tempFilters, userInteracted]);
@@ -137,8 +80,7 @@ export default function ProjectsPage() {
     const handleAccordionChange = (items: number[]) => {
         setAccordionActiveItems(items);
         setUserInteracted(true);
-        // Save to localStorage
-        localStorage.setItem('filterAccordionState', JSON.stringify(items));
+        localStorage.setItem(FILTER_ACCORDION_STORAGE_KEY, JSON.stringify(items));
     };
 
     const handleSort = (column: "basic_interest" | "initial_rating" | "credit_duration") => {
@@ -146,7 +88,7 @@ export default function ProjectsPage() {
         setSort(newSort);
     };
 
-    const handleTempFilterChange = (key: keyof typeof tempFilters, value: any) => {
+    const handleTempFilterChange = (key: keyof TempFilters, value: any) => {
         setTempFilters(prev => ({ ...prev, [key]: value }));
     };
 
@@ -169,86 +111,21 @@ export default function ProjectsPage() {
     };
 
     const handleSaveFilters = () => {
-        const newFilters: FilterInput[] = [];
-
-        // Country filter (multi-select array)
-        if (tempFilters.countries.length > 0) {
-            newFilters.push({ id: 'country', value: tempFilters.countries });
-        }
-
-        // Rating filter (multi-select array)
-        if (tempFilters.ratings.length > 0) {
-            newFilters.push({ id: 'initial_rating', value: tempFilters.ratings });
-        }
-
-        // Purpose filter (single)
-        if (tempFilters.purpose) {
-            newFilters.push({ id: 'purpose', value: tempFilters.purpose });
-        }
-
-        // Credit duration filter (range)
-        if (tempFilters.creditDurationMin || tempFilters.creditDurationMax) {
-            newFilters.push({
-                id: 'credit_duration',
-                value: {
-                    min: tempFilters.creditDurationMin ? parseInt(tempFilters.creditDurationMin) : undefined,
-                    max: tempFilters.creditDurationMax ? parseInt(tempFilters.creditDurationMax) : undefined
-                }
-            });
-        }
-
-        // Campaign ID filter
-        if (tempFilters.campaignId) {
-            newFilters.push({ id: 'campaign_id', value: tempFilters.campaignId });
-        }
-
-        // Private ID filter
-        if (tempFilters.privateId) {
-            newFilters.push({ id: 'private_id', value: tempFilters.privateId });
-        }
-
+        const newFilters = buildFiltersFromTemp(tempFilters);
         setFilters(newFilters);
     };
 
     const handleClearFilters = () => {
-        setTempFilters({
-            countries: [],
-            ratings: [],
-            purpose: '',
-            creditDurationMin: '',
-            creditDurationMax: '',
-            campaignId: '',
-            privateId: ''
-        });
+        setTempFilters(getEmptyTempFilters());
         resetFilters();
-
-        // Reset accordion state and clear localStorage
         setUserInteracted(false);
-        localStorage.removeItem('filterAccordionState');
-        // Open first accordion by default after clearing
+        localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
         setAccordionActiveItems([0]);
     };
 
     if (isLoading) return <p>Loading projects...</p>;
     if (error) return <p>Failed to load projects: {error}</p>;
     if (!data || data.length === 0) return <p>No projects found</p>;
-
-    const ratingOptions = ['AAA', 'AA+', 'AA', 'AA-', 'A+', 'A', 'A-', 'BBB+', 'BBB', 'BBB-'];
-
-    const countryOptions = [
-        { code: 'lt', label: 'Lietuva' },
-        { code: 'lv', label: 'Latvija' },
-        { code: 'ee', label: 'Estija' },
-        { code: 'es', label: 'Ispanija' }
-    ];
-
-    const purposeOptions = [
-        { value: 'real_estate_development', label: 'Nekilnojamojo turto plėtra' },
-        { value: 'refinancing', label: 'Refinansavimas' },
-        { value: 'working_capital', label: 'Apyvartinis kapitalas' },
-        { value: 'real_estate_acquisition', label: 'Nekilnojamojo turto įsigijimas' },
-        { value: 'other', label: 'Kita' }
-    ];
 
     return (
         <div className={styles.wrapper}>
@@ -263,14 +140,13 @@ export default function ProjectsPage() {
                                 activeItems={accordionActiveItems}
                                 onItemsChange={handleAccordionChange}
                             >
-                                {/* Country Filter */}
                                 <AccordionItem index={0}>
                                     <AccordionHeader index={0}>
                                         Šalis
                                     </AccordionHeader>
                                     <AccordionContent index={0}>
                                         <div className={styles.checkboxGrid}>
-                                            {countryOptions.map(country => (
+                                            {COUNTRY_OPTIONS.map(country => (
                                                 <Checkbox
                                                     key={country.code}
                                                     label={country.label}
@@ -283,14 +159,13 @@ export default function ProjectsPage() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                {/* Initial Rating Filter */}
                                 <AccordionItem index={1}>
                                     <AccordionHeader index={1}>
                                         Pradinis reitingas
                                     </AccordionHeader>
                                     <AccordionContent index={1}>
                                         <div className={styles.checkboxGrid}>
-                                            {ratingOptions.map(rating => (
+                                            {RATING_OPTIONS.map(rating => (
                                                 <Checkbox
                                                     key={rating}
                                                     label={rating}
@@ -302,7 +177,6 @@ export default function ProjectsPage() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                {/* Purpose/Type Filter */}
                                 <AccordionItem index={2}>
                                     <AccordionHeader index={2}>
                                         Paskirtis / Tipas
@@ -310,7 +184,7 @@ export default function ProjectsPage() {
                                     <AccordionContent index={2}>
                                         <div className={styles.filterContent}>
                                             <Select
-                                                options={purposeOptions}
+                                                options={PURPOSE_OPTIONS}
                                                 value={tempFilters.purpose}
                                                 onChange={(value) => handleTempFilterChange('purpose', value)}
                                                 placeholder="Visos paskirtys"
@@ -320,7 +194,6 @@ export default function ProjectsPage() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                {/* Credit Duration Filter */}
                                 <AccordionItem index={3}>
                                     <AccordionHeader index={3}>
                                         Kredito trukmė (mėn.)
@@ -345,7 +218,6 @@ export default function ProjectsPage() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                {/* Campaign ID Filter */}
                                 <AccordionItem index={4}>
                                     <AccordionHeader index={4}>
                                         Kampanijos ID
@@ -363,7 +235,6 @@ export default function ProjectsPage() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                {/* Private ID Filter */}
                                 <AccordionItem index={5}>
                                     <AccordionHeader index={5}>
                                         Privatus ID
@@ -382,7 +253,6 @@ export default function ProjectsPage() {
                                 </AccordionItem>
                             </Accordion>
 
-                            {/* Filter Action Buttons */}
                             <div className={styles.filterActions}>
                                 <Button
                                     onClick={handleSaveFilters}
@@ -415,7 +285,6 @@ export default function ProjectsPage() {
                 </div>
             </header>
 
-            {/* Main Projects Table */}
             <main className={styles.main}>
                 <ProjectsTable
                     projects={data}
@@ -424,7 +293,6 @@ export default function ProjectsPage() {
                 />
             </main>
 
-            {/* Pagination */}
             {meta && (
                 <div className={styles.pagination}>
                     <button
@@ -447,7 +315,6 @@ export default function ProjectsPage() {
                 </div>
             )}
 
-            {/* Limit selector */}
             <div className={styles.limitSelector}>
                 <label className={styles.limitLabel}>
                     Elementų per puslapį:
@@ -456,7 +323,7 @@ export default function ProjectsPage() {
                         onChange={(e) => setLimit(Number(e.target.value))}
                         className={styles.limitSelect}
                     >
-                        {[10, 20, 50, 100].map(n => (
+                        {ITEMS_PER_PAGE_OPTIONS.map(n => (
                             <option key={n} value={n}>{n}</option>
                         ))}
                     </select>
