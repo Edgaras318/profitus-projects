@@ -3,6 +3,9 @@ import ProgressBar from '@/components/common/ProgressBar/ProgressBar';
 import Rating from '@/components/common/Rating/Rating';
 import CountryFlag from '@/components/common/CountryFlag/CountryFlag';
 import SecurityBadge from '@/components/common/SecurityBadge/SecurityBadge';
+import TableSkeleton from '@/components/common/TableSkeleton/TableSkeleton';
+import EmptyState from '@/components/common/EmptyState/EmptyState';
+import ErrorState from '@/components/common/ErrorState/ErrorState';
 import type { ProjectCardResponse } from '@/types/project.types';
 import type { SortInput, SortId } from '@/types/project.api.types';
 import styles from './ProjectsTable.module.scss';
@@ -11,12 +14,22 @@ interface ProjectsTableProps {
     projects: ProjectCardResponse[];
     onSort?: (column: SortId) => void;
     currentSort?: SortInput[];
+    isLoading?: boolean;
+    error?: Error | string | null;
+    limit?: number;
+    onRetry?: () => void;
+    onClearFilters?: () => void;
 }
 
 export default function ProjectsTable({
                                           projects,
                                           onSort,
-                                          currentSort = []
+                                          currentSort = [],
+                                          isLoading = false,
+                                          error = null,
+                                          limit = 10,
+                                          onRetry,
+                                          onClearFilters
                                       }: ProjectsTableProps) {
 
     const formatCurrency = (amount: number): string => {
@@ -50,6 +63,44 @@ export default function ProjectsTable({
             onSort(column);
         }
     };
+
+    // Handle loading state
+    if (isLoading) {
+        return <TableSkeleton rows={limit} columns={13} />;
+    }
+
+    // Handle error state
+    if (error) {
+        const errorType = error.toString().toLowerCase().includes('network')
+            ? 'network'
+            : error.toString().toLowerCase().includes('server')
+                ? 'server'
+                : 'general';
+
+        return (
+            <ErrorState
+                type={errorType}
+                error={error}
+                onRetry={onRetry}
+                showDetails={process.env.NODE_ENV === 'development'}
+            />
+        );
+    }
+
+    // Handle empty state
+    if (!projects || projects.length === 0) {
+        return (
+            <EmptyState
+                title="No projects found"
+                description="There are no projects matching your current filters. Try adjusting your search criteria."
+                icon="search"
+                action={onClearFilters ? {
+                    label: 'Clear Filters',
+                    onClick: onClearFilters
+                } : undefined}
+            />
+        );
+    }
 
     return (
         <div className={styles.tableContainer}>
@@ -136,12 +187,12 @@ export default function ProjectsTable({
                             {/* LTV */}
                             <td className={styles.cell}>
                                 <div className={styles.ltvInfo}>
-                                        <span className={styles.ltvValue}>
-                                            {project.loan_ratio_external}%
-                                        </span>
+                                    <span className={styles.ltvValue}>
+                                        {project.loan_ratio_external}%
+                                    </span>
                                     <span className={styles.ltvMax}>
-                                            (maks. {project.loan_ratio_max}%)
-                                        </span>
+                                        (maks. {project.loan_ratio_max}%)
+                                    </span>
                                 </div>
                             </td>
 
@@ -181,9 +232,9 @@ export default function ProjectsTable({
 
                             {/* Interest Rate */}
                             <td className={styles.cell}>
-                                    <span className={styles.interestRate}>
-                                        {interestRange}
-                                    </span>
+                                <span className={styles.interestRate}>
+                                    {interestRange}
+                                </span>
                             </td>
 
                             {/* Action Button */}
