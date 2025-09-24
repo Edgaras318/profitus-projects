@@ -1,73 +1,215 @@
-# React + TypeScript + Vite
+# Profitus Projects
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application built with TypeScript, Vite, and cutting-edge web technologies.
 
-Currently, two official plugins are available:
+## 📋 Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Before you begin, ensure you have the following installed:
 
-## React Compiler
+- **Node.js** (version 18.0.0 or higher) - [Download Node.js](https://nodejs.org/)
+- **npm** (comes with Node.js) or alternative package managers:
+    - **pnpm**: `npm install -g pnpm`
+    - **yarn**: `npm install -g yarn`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Verify your installations:
+```bash
+node --version  # Should be >= 18.0.0
+npm --version   # Should be >= 8.0.0
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Clone the Repository
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/Edgaras318/profitus-projects.git
+cd profitus-projects
 ```
+
+### 2. Install Dependencies
+
+Using npm (default):
+```bash
+npm install
+```
+
+Using pnpm:
+```bash
+pnpm install
+```
+
+Using yarn:
+```bash
+yarn install
+```
+
+### 3. Set Up Environment Variables
+
+Create a `.env` file in the root directory based on `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your configuration:
+```env
+# API Configuration
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_KEY=your_api_key_here
+
+# Feature Flags
+VITE_ENABLE_ANALYTICS=false
+VITE_ENABLE_DEBUG=true
+
+# Other Configuration
+VITE_APP_NAME=Profitus Projects
+```
+
+### 4. Start Development Server
+
+```bash
+npm run dev
+```
+
+The application will start at [http://localhost:5173](http://localhost:5173)
+
+- The server features hot-module replacement (HMR) for instant updates
+- Any changes to source files will automatically reload in the browser
+
+## 📦 Available Scripts
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| **dev** | `npm run dev` | Start Vite development server with HMR |
+| **build** | `npm run build` | Build for production (TypeScript compile + Vite build) |
+| **preview** | `npm run preview` | Preview production build locally |
+| **lint** | `npm run lint` | Run ESLint to check code quality |
+| **type-check** | `npm run type-check` | Run TypeScript compiler without emitting files |
+| **type-check:watch** | `npm run type-check:watch` | Run TypeScript compiler in watch mode |
+
+
+## 🛠️ Development Workflow
+
+### 1. Development Mode
+
+```bash
+npm run dev
+```
+- Opens development server at http://localhost:5173
+- Features hot-module replacement for instant updates
+- Shows build errors and warnings in the console
+
+### 2. Type Checking
+
+During development, run type checking in a separate terminal:
+```bash
+npm run type-check:watch
+```
+
+### 3. Code Quality
+
+Before committing, ensure code quality:
+```bash
+# Run linter
+npm run lint
+
+# Type check
+npm run type-check
+```
+
+### 4. Building for Production
+
+```bash
+# Create optimized production build
+npm run build
+
+# Test production build locally
+npm run preview
+```
+
+The production build will be generated in the `dist/` directory.
+
+## 🔧 Configuration
+
+### Vite Configuration
+
+Edit `vite.config.ts` to customize:
+- Build output
+- Development server settings
+- Plugin configuration
+- Path aliases
+
+### TypeScript Configuration
+
+- `tsconfig.json` - Base configuration
+- `tsconfig.app.json` - Application-specific settings
+- `tsconfig.node.json` - Node.js environment settings
+
+### ESLint Configuration
+
+Edit `eslint.config.js` to customize linting rules.
+
+## 🚢 Deployment
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+This creates an optimized production build in the `dist/` directory.
+
+## 💻 Tech Stack
+
+- **React** (v19.1.1) - UI library
+- **TypeScript** (v5.8.3) - Type-safe JavaScript
+- **Vite** (v7.1.7) - Build tool and dev server
+- **Axios** (v1.12.2) - HTTP client
+- **Lucide React** (v0.544.0) - Icon library
+- **SASS** (v1.93.1) - CSS preprocessor
+- **ESLint** (v9.36.0) - Code linting
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Port Already in Use**
+```bash
+# Kill process on port 5173
+npx kill-port 5173
+# Or use a different port
+npm run dev -- --port 3000
+```
+
+**Node Modules Issues**
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Build Errors**
+```bash
+# Clear Vite cache
+rm -rf node_modules/.vite
+npm run build
+```
+
+**TypeScript Errors**
+```bash
+# Restart TypeScript service in your IDE
+# Or clear TypeScript cache
+rm -rf node_modules/.cache/typescript
+```
+
+## 📚 Additional Resources
+
+- [Vite Documentation](https://vitejs.dev/)
+- [React Documentation](https://react.dev/)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [ESLint Documentation](https://eslint.org/)
+
+
+## 📝 License
+
+This project is private and proprietary.
