@@ -20,17 +20,14 @@ export function useProjects(initialParams?: Partial<Params>) {
 
     const [data, setData] = useState<ProjectCardResponse[]>([]);
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
-    // Track request ID to handle race conditions
     const requestIdRef = useRef(0);
 
     useEffect(() => {
-        // Create a new AbortController for this request
         const controller = new AbortController();
-        // Increment and capture the current request ID
         const requestId = ++requestIdRef.current;
 
         setIsLoading(true);
@@ -38,7 +35,6 @@ export function useProjects(initialParams?: Partial<Params>) {
 
         getProjects(params, controller.signal)
             .then(res => {
-                // Only update state if this is still the latest request
                 if (requestIdRef.current !== requestId || controller.signal.aborted) {
                     return;
                 }
@@ -46,27 +42,22 @@ export function useProjects(initialParams?: Partial<Params>) {
                 setMeta(res.meta);
             })
             .catch((e: unknown) => {
-                // Then handle the error safely
                 const errorMessage = e instanceof Error ? e.message : 'An unexpected error occurred';
 
-                // Don't set error if request was aborted or cancelled
                 if (controller.signal.aborted || errorMessage === 'Request cancelled') {
                     return;
                 }
                 setError(errorMessage);
             })
             .finally(() => {
-                // Only update loading state if this is still the latest request
                 if (requestIdRef.current === requestId && !controller.signal.aborted) {
                     setIsLoading(false);
                 }
             });
 
-        // Cleanup: abort the request when component unmounts or params change
         return () => controller.abort();
-    }, [params, refreshKey]); // Added refreshKey to dependencies
+    }, [params, refreshKey]);
 
-    // Handlers
     const setPage = (page: number) =>
         setParams((prev) => ({ ...prev, page }));
 
@@ -97,6 +88,6 @@ export function useProjects(initialParams?: Partial<Params>) {
         setSort,
         setFilters,
         resetFilters,
-        refetch, // New refetch function
+        refetch,
     };
 }
