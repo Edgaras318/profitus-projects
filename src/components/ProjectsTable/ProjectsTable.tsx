@@ -10,6 +10,7 @@ import ErrorState from '@/components/common/ErrorState/ErrorState';
 import type { ProjectCardResponse, ProjectStatusEnum } from '@/types/project.types';
 import type { SortInput, SortId } from '@/types/project.api.types';
 import styles from './ProjectsTable.module.scss';
+import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 
 interface ProjectsTableProps {
     projects: ProjectCardResponse[];
@@ -68,12 +69,6 @@ export default function ProjectsTable({
         return Math.min(100, Math.max(0, Number.isFinite(percentage) ? percentage : 0));
     };
 
-    const getSortIcon = (column: string): string => {
-        const sortItem = currentSort!.find(s => s.id === column);
-        if (!sortItem) return '';
-        return sortItem.desc ? '↓' : '↑';
-    };
-
     const handleHeaderClick = (column: SortId) => {
         if (onSort) {
             onSort(column);
@@ -121,6 +116,27 @@ export default function ProjectsTable({
                 };
         }
     };
+
+    const getAriaSort = (column: SortId): "none" | "ascending" | "descending" => {
+        const sortItem = currentSort!.find(s => s.id === column);
+        if (!sortItem) return "none";
+        return sortItem.desc ? "descending" : "ascending";
+    };
+
+    const getSortIcon = (column: SortId) => {
+        const sortItem = currentSort!.find(s => s.id === column);
+
+        if (!sortItem) {
+            // unsorted → neutral up/down icon
+            return <ArrowUpDown size={14} aria-hidden="true" />;
+        }
+
+        return sortItem.desc
+            ? <ArrowDown className={'sortActiveIcon'} size={14} aria-hidden="true" />
+            : <ArrowUp size={14} aria-hidden="true" />;
+    };
+
+
 
     if (isLoading) {
         return (
@@ -170,30 +186,52 @@ export default function ProjectsTable({
                 <tr className={styles.headerRow}>
                     <th className={`${styles.headerCell} ${styles.imageHeader}`}></th>
                     <th className={styles.headerCell}>Pavadinimas</th>
+
                     <th
+                        scope="col"
                         className={`${styles.headerCell} ${styles.sortable}`}
-                        onClick={() => handleHeaderClick('initial_rating')}
+                        aria-sort={getAriaSort("initial_rating")}
                     >
-                        Reitingas {getSortIcon('initial_rating')}
+                        <button
+                            type="button"
+                            className={styles.sortButton}
+                            onClick={() => handleHeaderClick("initial_rating")}
+                        >
+                            Reitingas {getSortIcon("initial_rating")}
+                        </button>
                     </th>
                     <th className={styles.headerCell}>Šalis</th>
                     <th className={styles.headerCell}>LTV</th>
                     <th className={styles.headerCell}>Surinkta</th>
                     <th className={styles.headerCell}>Tikslas</th>
                     <th
+                        scope="col"
                         className={`${styles.headerCell} ${styles.sortable}`}
-                        onClick={() => handleHeaderClick('credit_duration')}
+                        aria-sort={getAriaSort("credit_duration")}
                     >
-                        Time {getSortIcon('credit_duration')}
+                        <button
+                            type="button"
+                            className={styles.sortButton}
+                            onClick={() => handleHeaderClick("credit_duration")}
+                        >
+                            Time {getSortIcon("credit_duration")}
+                        </button>
                     </th>
                     <th className={styles.headerCell}>Users</th>
                     <th className={styles.headerCell}>Date</th>
                     <th className={styles.headerCell}>Progress bar</th>
                     <th
+                        scope="col"
                         className={`${styles.headerCell} ${styles.sortable}`}
-                        onClick={() => handleHeaderClick('basic_interest')}
+                        aria-sort={getAriaSort("basic_interest")}
                     >
-                        Interest rate {getSortIcon('basic_interest')}
+                        <button
+                            type="button"
+                            className={styles.sortButton}
+                            onClick={() => handleHeaderClick("basic_interest")}
+                        >
+                            Interest rate {getSortIcon("basic_interest")}
+                        </button>
                     </th>
                     <th className={styles.headerCell}></th>
                 </tr>

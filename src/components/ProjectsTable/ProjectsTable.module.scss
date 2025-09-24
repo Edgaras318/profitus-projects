@@ -351,3 +351,23 @@
     }
   }
 }
+
+.sortButton {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font: inherit;
+  color: #E91E63;
+
+  svg {
+    opacity: 0.6;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    opacity: 1;
+  }
+}
+
