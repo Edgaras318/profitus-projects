@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { getProjects } from "@/api/projects.service";
 import type { ProjectCardResponse, PaginationMeta } from "@/types/project.types";
 import type { SortInput, FilterInput } from "@/types/project.api.types";
@@ -22,6 +22,7 @@ export function useProjects(initialParams?: Partial<Params>) {
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     // Track request ID to handle race conditions
     const requestIdRef = useRef(0);
@@ -60,7 +61,7 @@ export function useProjects(initialParams?: Partial<Params>) {
 
         // Cleanup: abort the request when component unmounts or params change
         return () => controller.abort();
-    }, [params]);
+    }, [params, refreshKey]); // Added refreshKey to dependencies
 
     // Handlers
     const setPage = (page: number) =>
@@ -78,6 +79,10 @@ export function useProjects(initialParams?: Partial<Params>) {
     const resetFilters = () =>
         setParams((prev) => ({ ...prev, filters: [], page: 1 }));
 
+    const refetch = useCallback(() => {
+        setRefreshKey(prev => prev + 1);
+    }, []);
+
     return {
         data,
         meta,
@@ -89,5 +94,6 @@ export function useProjects(initialParams?: Partial<Params>) {
         setSort,
         setFilters,
         resetFilters,
+        refetch, // New refetch function
     };
 }
