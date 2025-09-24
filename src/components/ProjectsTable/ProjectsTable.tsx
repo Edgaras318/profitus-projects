@@ -4,6 +4,7 @@ import Rating from '@/components/common/Rating/Rating';
 import CountryFlag from '@/components/common/CountryFlag/CountryFlag';
 import SecurityBadge from '@/components/common/SecurityBadge/SecurityBadge';
 import TableSkeleton from '@/components/common/TableSkeleton/TableSkeleton';
+import type {ColumnType} from '@/components/common/TableSkeleton/TableSkeleton';
 import EmptyState from '@/components/common/EmptyState/EmptyState';
 import ErrorState from '@/components/common/ErrorState/ErrorState';
 import type { ProjectCardResponse } from '@/types/project.types';
@@ -20,6 +21,22 @@ interface ProjectsTableProps {
     onRetry?: () => void;
     onClearFilters?: () => void;
 }
+
+const PROJECTS_TABLE_COLUMN_TYPES: ColumnType[] = [
+    'image',
+    'text',
+    'text',
+    'text',
+    'rating',
+    'text',
+    'text',
+    'text',
+    'text',
+    'text',
+    'progress',
+    'badge',
+    'button'
+];
 
 export default function ProjectsTable({
                                           projects,
@@ -64,9 +81,14 @@ export default function ProjectsTable({
         }
     };
 
-    // Handle loading state
     if (isLoading) {
-        return <TableSkeleton rows={limit} columns={13} />;
+        return (
+            <TableSkeleton
+                rows={limit}
+                columns={13}
+                columnTypes={PROJECTS_TABLE_COLUMN_TYPES}
+            />
+        );
     }
 
     // Handle error state
