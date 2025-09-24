@@ -15,7 +15,7 @@ import type { FilterInput } from "@/types/project.api.types";
 import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
 import Select from "@/components/common/Select/Select";
 import Button from "@/components/common/Button/Button.tsx";
-import { X, Save } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function ProjectsPage() {
     const {
