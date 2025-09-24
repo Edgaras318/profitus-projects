@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useProjects } from "@/hooks/useProjects.ts";
+import { useFilterState } from '@/hooks/useFilterState';
+import { useAccordionState } from '@/hooks/useAccordionState';
 import { toggleSort } from "@/utils/queryHelpers.ts";
 import ProjectsTable from "@/components/ProjectsTable/ProjectsTable";
 import styles from './ProjectsPage.module.scss';
@@ -17,20 +19,12 @@ import InputText from "@/components/common/InputText/InputText";
 import InputNumber from "@/components/common/InputNumber/InputNumber";
 import Button from "@/components/common/Button/Button.tsx";
 import { X, Search, Hash } from 'lucide-react';
-import type { TempFilters } from '@/types/projectFilters.types';
-import { getEmptyTempFilters } from '@/types/projectFilters.types';
 import {
     RATING_OPTIONS,
     COUNTRY_OPTIONS,
     PURPOSE_OPTIONS,
-    ITEMS_PER_PAGE_OPTIONS,
-    FILTER_ACCORDION_STORAGE_KEY
+    ITEMS_PER_PAGE_OPTIONS
 } from '@/constants/projectFilters';
-import {
-    buildFiltersFromTemp,
-    parseTempFiltersFromParams,
-    getActiveAccordionItems
-} from '@/utils/filterHelpers';
 
 export default function ProjectsPage() {
     const {
@@ -46,81 +40,33 @@ export default function ProjectsPage() {
         resetFilters,
     } = useProjects({ limit: 10 });
 
-    const [tempFilters, setTempFilters] = useState<TempFilters>(getEmptyTempFilters());
-
-    const [userInteracted, setUserInteracted] = useState<boolean>(() => {
-        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
-        return savedState !== null;
+    const {
+        tempFilters,
+        handleTempFilterChange,
+        handleRatingChange,
+        handleCountryChange,
+        handleSaveFilters,
+        handleClearFilters
+    } = useFilterState({
+        initialFilters: params.filters,
+        onFiltersChange: setFilters,
+        onFiltersReset: resetFilters
     });
 
-    const [accordionActiveItems, setAccordionActiveItems] = useState<number[]>(() => {
-        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
-        if (savedState) {
-            try {
-                return JSON.parse(savedState);
-            } catch (e) {
-                localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
-            }
-        }
-        return [];
-    });
-
-    React.useEffect(() => {
-        const newTempFilters = parseTempFiltersFromParams(params.filters || []);
-        setTempFilters(newTempFilters);
-    }, [params.filters]);
-
-    React.useEffect(() => {
-        if (!userInteracted) {
-            const itemsToOpen = getActiveAccordionItems(tempFilters);
-            setAccordionActiveItems(itemsToOpen);
-        }
-    }, [tempFilters, userInteracted]);
-
-    const handleAccordionChange = (items: number[]) => {
-        setAccordionActiveItems(items);
-        setUserInteracted(true);
-        localStorage.setItem(FILTER_ACCORDION_STORAGE_KEY, JSON.stringify(items));
-    };
+    const {
+        accordionActiveItems,
+        handleAccordionChange,
+        resetAccordionState
+    } = useAccordionState(tempFilters);
 
     const handleSort = (column: "basic_interest" | "initial_rating" | "credit_duration") => {
         const newSort = toggleSort(params.sort, column);
         setSort(newSort);
     };
 
-    const handleTempFilterChange = (key: keyof TempFilters, value: any) => {
-        setTempFilters(prev => ({ ...prev, [key]: value }));
-    };
-
-    const handleRatingChange = (rating: string, checked: boolean) => {
-        setTempFilters(prev => ({
-            ...prev,
-            ratings: checked
-                ? [...prev.ratings, rating]
-                : prev.ratings.filter(r => r !== rating)
-        }));
-    };
-
-    const handleCountryChange = (country: string, checked: boolean) => {
-        setTempFilters(prev => ({
-            ...prev,
-            countries: checked
-                ? [...prev.countries, country]
-                : prev.countries.filter(c => c !== country)
-        }));
-    };
-
-    const handleSaveFilters = () => {
-        const newFilters = buildFiltersFromTemp(tempFilters);
-        setFilters(newFilters);
-    };
-
-    const handleClearFilters = () => {
-        setTempFilters(getEmptyTempFilters());
-        resetFilters();
-        setUserInteracted(false);
-        localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
-        setAccordionActiveItems([0]);
+    const handleClearAllFilters = () => {
+        handleClearFilters();
+        resetAccordionState();
     };
 
     if (isLoading) return <p>Loading projects...</p>;
@@ -262,7 +208,7 @@ export default function ProjectsPage() {
                                     Saugoti filtrus
                                 </Button>
                                 <Button
-                                    onClick={handleClearFilters}
+                                    onClick={handleClearAllFilters}
                                     variant="ghost"
                                     color="#666"
                                     icon={<X className={styles.clearIcon}/>}
