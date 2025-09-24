@@ -29,11 +29,6 @@ export default function ProjectsTable({
         }).format(amount).replace('EUR', '€');
     };
 
-    const formatDate = (dateString: string): string => {
-        // Simple date formatting - you might want to use a proper date library
-        return dateString;
-    };
-
     const calculateProgress = (invested: number, required: number): number => {
         return (invested / required) * 100;
     };
@@ -151,7 +146,7 @@ export default function ProjectsTable({
 
                             {/* Time */}
                             <td className={styles.cell}>
-                                {project.days_to_get_money}
+                                {project.credit_duration} d.
                             </td>
 
                             {/* Users/Investors */}
@@ -161,7 +156,7 @@ export default function ProjectsTable({
 
                             {/* Date */}
                             <td className={styles.cell}>
-                                {formatDate(project.funded_duration)}
+                                {project.credit_duration} men.
                             </td>
 
                             {/* Progress Bar */}
