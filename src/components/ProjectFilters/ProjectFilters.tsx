@@ -13,7 +13,7 @@ import Select from '@/components/common/Select/Select';
 import InputText from '@/components/common/InputText/InputText';
 import InputNumber from '@/components/common/InputNumber/InputNumber';
 import Button from '@/components/common/Button/Button';
-import type { TempFilters } from '@/types/projectFilters.types';
+import type { TempFilters, TempFilterChangeHandler } from '@/types/projectFilters.types';
 import { RATING_OPTIONS, COUNTRY_OPTIONS, PURPOSE_OPTIONS } from '@/constants/projectFilters';
 import styles from './ProjectFilters.module.scss';
 
@@ -21,7 +21,7 @@ interface ProjectFiltersProps {
     tempFilters: TempFilters;
     accordionActiveItems: number[];
     onAccordionChange: (items: number[]) => void;
-    onTempFilterChange: (key: keyof TempFilters, value: any) => void;
+    onTempFilterChange: TempFilterChangeHandler;
     onRatingChange: (rating: string, checked: boolean) => void;
     onCountryChange: (country: string, checked: boolean) => void;
     onSaveFilters: () => void;
@@ -109,14 +109,18 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                                 <InputNumber
                                     placeholder="Min"
                                     value={tempFilters.creditDurationMin}
-                                    onChange={(value) => onTempFilterChange('creditDurationMin', value)}
+                                    onChange={(value) =>
+                                        onTempFilterChange('creditDurationMin', value === '' ? '' : String(value))
+                                    }
                                     min={0}
                                     fullWidth
                                 />
                                 <InputNumber
                                     placeholder="Max"
                                     value={tempFilters.creditDurationMax}
-                                    onChange={(value) => onTempFilterChange('creditDurationMax', value)}
+                                    onChange={(value) =>
+                                        onTempFilterChange('creditDurationMax', value === '' ? '' : String(value))
+                                    }
                                     min={0}
                                     fullWidth
                                 />

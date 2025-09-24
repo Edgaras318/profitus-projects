@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { FilterInput } from '@/types/project.api.types';
-import type { TempFilters } from '@/types/projectFilters.types';
+import type { TempFilters, TempFilterChangeHandler } from '@/types/projectFilters.types';
 import {
     getEmptyTempFilters,
 } from '@/types/projectFilters.types';
@@ -28,7 +28,7 @@ export const useFilterState = ({
         setTempFilters(parseTempFiltersFromParams(initialFilters));
     }, [initialFilters]);
 
-    const handleTempFilterChange = (key: keyof TempFilters, value: any) => {
+    const handleTempFilterChange: TempFilterChangeHandler = (key, value) => {
         setTempFilters(prev => ({ ...prev, [key]: value }));
     };
 

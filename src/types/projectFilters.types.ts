@@ -8,6 +8,11 @@ export interface TempFilters {
     privateId: string;
 }
 
+export type TempFilterChangeHandler = <K extends keyof TempFilters>(
+    key: K,
+    value: TempFilters[K]
+) => void;
+
 export const getEmptyTempFilters = (): TempFilters => ({
     countries: [],
     ratings: [],
