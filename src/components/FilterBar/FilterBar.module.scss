@@ -1,7 +1,7 @@
 .wrapper {
   width: 100%;
   max-width: 20rem;
-  min-width: 15rem;
+  min-width: 20rem;
   position: relative;
 }
 
@@ -59,10 +59,30 @@
   right: 0;
   z-index: 50;
 
+  width: max-content;
+  max-width: min(90vw, 600px);
+  min-width: 100%;
+
   border: 1px solid #f3f4f6;
   border-radius: 1rem;
   background: #f9fafb;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  overflow-x: auto;
+  overflow-y: visible;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 640px) {
+  .content {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-width: none;
+  }
 }
 
 .placeholderGrid {
@@ -70,12 +90,15 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   padding: 1rem;
+
+  min-width: 0;
 }
 
 .placeholderItem {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .placeholderLabel {
@@ -97,6 +120,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .resetButton {
@@ -106,6 +130,7 @@
   border: 1px solid #d1d5db;
   background: #ffffff;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover {
     background: #f3f4f6;
@@ -120,6 +145,7 @@
   background: #a855f7;
   color: #ffffff;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover {
     background: #9333ea;
