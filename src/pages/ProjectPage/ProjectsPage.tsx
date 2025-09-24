@@ -199,7 +199,7 @@ export default function ProjectsPage() {
                             <Accordion multiple={true} defaultActiveIndex={[0, 1, 2]}>
                                 {/* Country Filter */}
                                 <AccordionItem index={0}>
-                                    <AccordionHeader index={0} icon="chevron">
+                                    <AccordionHeader index={0}  >
                                         Šalis
                                     </AccordionHeader>
                                     <AccordionContent index={0}>
@@ -219,7 +219,7 @@ export default function ProjectsPage() {
 
                                 {/* Initial Rating Filter */}
                                 <AccordionItem index={1}>
-                                    <AccordionHeader index={1} icon="chevron">
+                                    <AccordionHeader index={1}  >
                                         Pradinis reitingas
                                     </AccordionHeader>
                                     <AccordionContent index={1}>
@@ -238,7 +238,7 @@ export default function ProjectsPage() {
 
                                 {/* Purpose/Type Filter */}
                                 <AccordionItem index={2}>
-                                    <AccordionHeader index={2} icon="chevron">
+                                    <AccordionHeader index={2}  >
                                         Paskirtis / Tipas
                                     </AccordionHeader>
                                     <AccordionContent index={2}>
@@ -256,7 +256,7 @@ export default function ProjectsPage() {
 
                                 {/* Credit Duration Filter */}
                                 <AccordionItem index={3}>
-                                    <AccordionHeader index={3} icon="chevron">
+                                    <AccordionHeader index={3}  >
                                         Kredito trukmė (mėn.)
                                     </AccordionHeader>
                                     <AccordionContent index={3}>
@@ -284,7 +284,7 @@ export default function ProjectsPage() {
 
                                 {/* Campaign ID Filter */}
                                 <AccordionItem index={4}>
-                                    <AccordionHeader index={4} icon="chevron">
+                                    <AccordionHeader index={4}  >
                                         Kampanijos ID
                                     </AccordionHeader>
                                     <AccordionContent index={4}>
@@ -302,7 +302,7 @@ export default function ProjectsPage() {
 
                                 {/* Private ID Filter */}
                                 <AccordionItem index={5}>
-                                    <AccordionHeader index={5} icon="chevron">
+                                    <AccordionHeader index={5}  >
                                         Privatus ID
                                     </AccordionHeader>
                                     <AccordionContent index={5}>
