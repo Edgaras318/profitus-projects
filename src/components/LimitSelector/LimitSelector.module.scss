@@ -1,0 +1,31 @@
+.limitSelector {
+  display: flex;
+  justify-content: center;
+}
+
+.limitLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.limitSelect {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+
+  option {
+    background: #333;
+    color: white;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #E91E63;
+  }
+}
