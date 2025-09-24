@@ -84,8 +84,8 @@ export default function ProjectsTable({
                 {projects.map((project) => {
                     const progress = calculateProgress(project.invested_amount, project.required_amount);
                     const interestRange = project.max_bonus_interest
-                        ? `${project.basic_interest}-${project.basic_interest + project.max_bonus_interest}%`
-                        : `${project.basic_interest}%`;
+                        ? `${project.basic_interest.toFixed(1)}-${(project.basic_interest + project.max_bonus_interest).toFixed(1)}%`
+                        : `${project.basic_interest.toFixed(1)}%`;
 
                     return (
                         <tr key={project.pid} className={styles.row}>
