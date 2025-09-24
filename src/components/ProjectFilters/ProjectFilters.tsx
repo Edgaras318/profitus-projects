@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Search, Hash } from 'lucide-react';
 import FilterBar from '@/components/FilterBar/FilterBar';
 import {
@@ -38,8 +38,23 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                                                            onSaveFilters,
                                                            onClearFilters
                                                        }) => {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    const handleSave = () => {
+        onSaveFilters();
+        setIsFilterOpen(false); // close after save
+    };
+
+    const handleClear = () => {
+        onClearFilters();
+        setIsFilterOpen(false); // close after clear
+    };
+
     return (
-        <FilterBar>
+        <FilterBar
+            isOpen={isFilterOpen}
+            onToggle={() => setIsFilterOpen((prev) => !prev)}
+        >
             <div className={styles.filters}>
                 <Accordion
                     multiple={true}
@@ -165,14 +180,14 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
 
                 <div className={styles.filterActions}>
                     <Button
-                        onClick={onSaveFilters}
+                        onClick={handleSave}
                         variant="ghost"
                         color="#E91E63"
                     >
                         Saugoti filtrus
                     </Button>
                     <Button
-                        onClick={onClearFilters}
+                        onClick={handleClear}
                         variant="ghost"
                         color="#666"
                         icon={<X className={styles.clearIcon}/>}

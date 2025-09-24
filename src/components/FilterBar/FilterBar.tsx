@@ -1,38 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import { Filter as FilterIcon, ChevronUp } from "lucide-react";
 import styles from "./FilterBar.module.scss";
 
 export type FilterBarProps = {
     label?: string;
-    defaultOpen?: boolean;
+    isOpen: boolean;
+    onToggle: () => void;
     children?: React.ReactNode;
     className?: string;
 };
 
 export default function FilterBar({
                                       label = "Filtruoti",
-                                      defaultOpen = false,
+                                      isOpen,
+                                      onToggle,
                                       children,
                                       className,
                                   }: FilterBarProps) {
-    const [isOpen, setIsOpen] = useState(defaultOpen);
-
-    const toggle = () => {
-        setIsOpen((prev) => !prev);
-    };
-
     return (
         <div className={`${styles.wrapper} ${className || ""}`}>
             <button
                 type="button"
                 aria-expanded={isOpen}
-                onClick={toggle}
+                onClick={onToggle}
                 className={styles.toggleButton}
             >
-        <span className={styles.labelWrapper}>
-          <FilterIcon className={styles.icon} />
-          <span className={styles.label}>{label}</span>
-        </span>
+                <span className={styles.labelWrapper}>
+                    <FilterIcon className={styles.icon} />
+                    <span className={styles.label}>{label}</span>
+                </span>
                 <ChevronUp
                     className={`${styles.chevron} ${isOpen ? styles.open : ""}`}
                 />
