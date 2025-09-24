@@ -59,11 +59,12 @@ export const parseTempFiltersFromParams = (filters: FilterInput[] = []): TempFil
             case 'purpose':
                 tempFilters.purpose = filter.value as string;
                 break;
-            case 'credit_duration':
+            case 'credit_duration': {
                 const duration = filter.value as { min?: number; max?: number };
                 tempFilters.creditDurationMin = duration.min?.toString() || '';
                 tempFilters.creditDurationMax = duration.max?.toString() || '';
                 break;
+            }
             case 'campaign_id':
                 tempFilters.campaignId = filter.value as string;
                 break;

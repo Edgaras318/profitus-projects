@@ -45,12 +45,15 @@ export function useProjects(initialParams?: Partial<Params>) {
                 setData(res.data);
                 setMeta(res.meta);
             })
-            .catch((e: any) => {
+            .catch((e: unknown) => {
+                // Then handle the error safely
+                const errorMessage = e instanceof Error ? e.message : 'An unexpected error occurred';
+
                 // Don't set error if request was aborted or cancelled
-                if (controller.signal.aborted || e.message === 'Request cancelled') {
+                if (controller.signal.aborted || errorMessage === 'Request cancelled') {
                     return;
                 }
-                setError(e.message ?? "Failed to fetch projects");
+                setError(errorMessage);
             })
             .finally(() => {
                 // Only update loading state if this is still the latest request
