@@ -99,12 +99,6 @@ export default function ProjectsPage() {
                 : prev.ratings.filter(r => r !== rating)
         }));
     };
-    const handlePurposeChange = (purpose: string, checked: boolean) => {
-        setTempFilters(prev => ({
-            ...prev,
-            purpose: checked ? purpose : (prev.purpose === purpose ? '' : prev.purpose)
-        }));
-    };
 
     const handleCountryChange = (country: string, checked: boolean) => {
         setTempFilters(prev => ({
