@@ -7,7 +7,7 @@ import TableSkeleton from '@/components/common/TableSkeleton/TableSkeleton';
 import type {ColumnType} from '@/components/common/TableSkeleton/TableSkeleton';
 import EmptyState from '@/components/common/EmptyState/EmptyState';
 import ErrorState from '@/components/common/ErrorState/ErrorState';
-import type { ProjectCardResponse } from '@/types/project.types';
+import type { ProjectCardResponse, ProjectStatusEnum } from '@/types/project.types';
 import type { SortInput, SortId } from '@/types/project.api.types';
 import styles from './ProjectsTable.module.scss';
 
@@ -59,18 +59,17 @@ export default function ProjectsTable({
     };
 
     const calculateProgress = (invested: number, required: number): number => {
-        // Guard against zero or negative required amount
         if (required <= 0) {
             return invested > 0 ? 100 : 0;
         }
 
         const percentage = (invested / required) * 100;
-        // Clamp between 0-100 and ensure it's a valid finite number
+
         return Math.min(100, Math.max(0, Number.isFinite(percentage) ? percentage : 0));
     };
 
     const getSortIcon = (column: string): string => {
-        const sortItem = currentSort.find(s => s.id === column);
+        const sortItem = currentSort!.find(s => s.id === column);
         if (!sortItem) return '';
         return sortItem.desc ? '↓' : '↑';
     };
@@ -78,6 +77,48 @@ export default function ProjectsTable({
     const handleHeaderClick = (column: SortId) => {
         if (onSort) {
             onSort(column);
+        }
+    };
+
+    const getButtonProps = (status: ProjectStatusEnum) => {
+        switch (status) {
+            case 'funded':
+                return {
+                    text: 'Projektas finansuotas',
+                    disabled: true,
+                    className: styles.fundedButton
+                };
+            case 'coming_soon':
+                return {
+                    text: 'Netrukus',
+                    disabled: true,
+                    className: styles.comingSoonButton
+                };
+            case 'not_funded':
+                return {
+                    text: 'Nefinansuotas',
+                    disabled: true,
+                    className: styles.notFundedButton
+                };
+            case 'finished':
+                return {
+                    text: 'Baigtas',
+                    disabled: true,
+                    className: styles.finishedButton
+                };
+            case 'confirmed':
+                return {
+                    text: 'Patvirtintas',
+                    disabled: true,
+                    className: styles.confirmedButton
+                };
+            case 'open_for_investments':
+            default:
+                return {
+                    text: 'Investuokite',
+                    disabled: false,
+                    className: ''
+                };
         }
     };
 
@@ -91,7 +132,6 @@ export default function ProjectsTable({
         );
     }
 
-    // Handle error state
     if (error) {
         const errorType = error.toString().toLowerCase().includes('network')
             ? 'network'
@@ -109,7 +149,6 @@ export default function ProjectsTable({
         );
     }
 
-    // Handle empty state
     if (!projects || projects.length === 0) {
         return (
             <EmptyState
@@ -166,9 +205,11 @@ export default function ProjectsTable({
                         ? `${project.basic_interest.toFixed(1)}-${(project.basic_interest + project.max_bonus_interest).toFixed(1)}%`
                         : `${project.basic_interest.toFixed(1)}%`;
 
+                    const buttonProps = getButtonProps(project.status);
+
                     return (
                         <tr key={project.pid} className={styles.row}>
-                            {/* Project Image with Security Badge */}
+                            {/* Project Image with Security Badge and Status Overlay */}
                             <td className={styles.cell}>
                                 <div className={styles.imageContainer}>
                                     {project.image_url && (
@@ -182,6 +223,14 @@ export default function ProjectsTable({
                                                 securityMeasure={project.security_measures}
                                                 className={styles.badgeInside}
                                             />
+                                            {/* Add overlay for funded projects */}
+                                            {project.status === 'funded' && (
+                                                <div className={styles.fundedOverlay}>
+                                                    <span className={styles.overlayText}>
+                                                        Projektas<br />finansuotas
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -261,9 +310,14 @@ export default function ProjectsTable({
 
                             {/* Action Button */}
                             <td className={styles.cell}>
-                                <Button size="small" >
-                                    Investuokite
-                                </Button>
+                                <div className={`${styles.buttonWrapper} ${buttonProps.className}`}>
+                                    <Button
+                                        size="small"
+                                        disabled={buttonProps.disabled}
+                                    >
+                                        {buttonProps.text}
+                                    </Button>
+                                </div>
                             </td>
                         </tr>
                     );
