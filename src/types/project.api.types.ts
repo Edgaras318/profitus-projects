@@ -15,6 +15,7 @@ export type FilterId =
 
 export type FilterValue =
     | string
+    | string[]
     | number
     | number[]
     | { min?: number; max?: number };
