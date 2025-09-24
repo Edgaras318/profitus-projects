@@ -22,6 +22,7 @@ export default function ProjectsPage() {
         setSort,
         setFilters,
         resetFilters,
+        refetch,
     } = useProjects({ limit: 10 });
 
     const {
@@ -57,9 +58,13 @@ export default function ProjectsPage() {
         console.log('View changed to:', view);
     };
 
-    if (isLoading) return <p>Loading projects...</p>;
-    if (error) return <p>Failed to load projects: {error}</p>;
-    if (!data || data.length === 0) return <p>No projects found</p>;
+    const handleRetry = () => {
+        if (refetch) {
+            refetch();
+        } else {
+            setPage(params.page || 1);
+        }
+    };
 
     return (
         <div className={styles.wrapper}>
@@ -82,13 +87,18 @@ export default function ProjectsPage() {
 
             <main className={styles.main}>
                 <ProjectsTable
-                    projects={data}
+                    projects={data || []}
                     onSort={handleSort}
                     currentSort={params.sort}
+                    isLoading={isLoading}
+                    error={error}
+                    limit={params.limit}
+                    onRetry={handleRetry}
+                    onClearFilters={handleClearAllFilters}
                 />
             </main>
 
-            {meta && (
+            {meta && !isLoading && !error && data && data.length > 0 && (
                 <>
                     <Pagination
                         currentPage={meta.current_page}
