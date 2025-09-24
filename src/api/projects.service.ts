@@ -28,14 +28,18 @@ function buildQuery(params: GetProjectsParams): string {
     return qs ? `?${qs}` : "";
 }
 
-
-export async function getProjects(params: GetProjectsParams) {
+export async function getProjects(
+    params: GetProjectsParams,
+    signal?: AbortSignal
+) {
     const query = buildQuery(params);
 
     const { data } = await api.get<{
         data: ProjectCardResponse[];
         meta: PaginationMeta;
-    }>(`/landing/projects${query}`);
+    }>(`/landing/projects${query}`, {
+        ...(signal && { signal })
+    });
 
     return data;
 }

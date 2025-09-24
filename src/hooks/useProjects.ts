@@ -1,5 +1,4 @@
-// hooks/useProjects.ts
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getProjects } from "@/api/projects.service";
 import type { ProjectCardResponse, PaginationMeta } from "@/types/project.types";
 import type { SortInput, FilterInput } from "@/types/project.api.types";
@@ -24,24 +23,44 @@ export function useProjects(initialParams?: Partial<Params>) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Core fetcher
-    const fetchData = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const res = await getProjects(params);
-            setData(res.data);
-            setMeta(res.meta);
-        } catch (e: any) {
-            setError(e.message ?? "Failed to fetch projects");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [params]);
+    // Track request ID to handle race conditions
+    const requestIdRef = useRef(0);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        // Create a new AbortController for this request
+        const controller = new AbortController();
+        // Increment and capture the current request ID
+        const requestId = ++requestIdRef.current;
+
+        setIsLoading(true);
+        setError(null);
+
+        getProjects(params, controller.signal)
+            .then(res => {
+                // Only update state if this is still the latest request
+                if (requestIdRef.current !== requestId || controller.signal.aborted) {
+                    return;
+                }
+                setData(res.data);
+                setMeta(res.meta);
+            })
+            .catch((e: any) => {
+                // Don't set error if request was aborted or cancelled
+                if (controller.signal.aborted || e.message === 'Request cancelled') {
+                    return;
+                }
+                setError(e.message ?? "Failed to fetch projects");
+            })
+            .finally(() => {
+                // Only update loading state if this is still the latest request
+                if (requestIdRef.current === requestId && !controller.signal.aborted) {
+                    setIsLoading(false);
+                }
+            });
+
+        // Cleanup: abort the request when component unmounts or params change
+        return () => controller.abort();
+    }, [params]);
 
     // Handlers
     const setPage = (page: number) =>
