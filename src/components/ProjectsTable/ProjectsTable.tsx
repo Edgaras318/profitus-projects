@@ -1,4 +1,3 @@
-
 import Button from '@/components/common/Button/Button';
 import ProgressBar from '@/components/common/ProgressBar/ProgressBar';
 import Rating from '@/components/common/Rating/Rating';
@@ -30,7 +29,14 @@ export default function ProjectsTable({
     };
 
     const calculateProgress = (invested: number, required: number): number => {
-        return (invested / required) * 100;
+        // Guard against zero or negative required amount
+        if (required <= 0) {
+            return invested > 0 ? 100 : 0;
+        }
+
+        const percentage = (invested / required) * 100;
+        // Clamp between 0-100 and ensure it's a valid finite number
+        return Math.min(100, Math.max(0, Number.isFinite(percentage) ? percentage : 0));
     };
 
     const getSortIcon = (column: string): string => {
@@ -161,7 +167,7 @@ export default function ProjectsTable({
 
                             {/* Date */}
                             <td className={styles.cell}>
-                                {project.credit_duration} men.
+                                {project.days_to_get_money ? `${project.days_to_get_money} men.` : '—'}
                             </td>
 
                             {/* Progress Bar */}
