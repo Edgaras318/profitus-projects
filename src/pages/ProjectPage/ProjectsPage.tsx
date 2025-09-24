@@ -64,7 +64,7 @@ export default function ProjectsPage() {
             if (filter.id === 'country') {
                 newTempFilters.countries = filter.value as string[];
             } else if (filter.id === 'initial_rating') {
-                newTempFilters.ratings.push(filter.value as string);
+                newTempFilters.ratings = filter.value as string[];
             } else if (filter.id === 'purpose') {
                 newTempFilters.purpose = filter.value as string;
             } else if (filter.id === 'credit_duration') {
