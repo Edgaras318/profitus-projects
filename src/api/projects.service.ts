@@ -11,25 +11,23 @@ type GetProjectsParams = {
 
 // Encode arrays as query params
 function buildQuery(params: GetProjectsParams): string {
-    const query: string[] = [];
+    const searchParams = new URLSearchParams();
 
-    if (params.page) query.push(`page=${params.page}`);
-    if (params.limit) query.push(`limit=${params.limit}`);
+    if (params.page) searchParams.set("page", String(params.page));
+    if (params.limit) searchParams.set("limit", String(params.limit));
 
-    if (params.sort && params.sort.length > 0) {
-        params.sort.forEach((s) => {
-            query.push(`sort[]=${encodeURIComponent(JSON.stringify(s))}`);
-        });
-    }
+    params.sort?.forEach(s =>
+        searchParams.append("sort[]", JSON.stringify(s))
+    );
 
-    if (params.filters && params.filters.length > 0) {
-        params.filters.forEach((f) => {
-            query.push(`filters[]=${encodeURIComponent(JSON.stringify(f))}`);
-        });
-    }
+    params.filters?.forEach(f =>
+        searchParams.append("filters[]", JSON.stringify(f))
+    );
 
-    return query.length > 0 ? `?${query.join("&")}` : "";
+    const qs = searchParams.toString();
+    return qs ? `?${qs}` : "";
 }
+
 
 export async function getProjects(params: GetProjectsParams) {
     const query = buildQuery(params);
