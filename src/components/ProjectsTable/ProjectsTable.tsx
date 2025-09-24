@@ -182,7 +182,7 @@ export default function ProjectsTable({
 
                             {/* Action Button */}
                             <td className={styles.cell}>
-                                <Button size="small">
+                                <Button size="small" >
                                     Investuokite
                                 </Button>
                             </td>

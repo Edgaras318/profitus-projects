@@ -14,6 +14,8 @@ import Checkbox from "@/components/common/Checkbox/Checkbox";
 import type { FilterInput } from "@/types/project.api.types";
 import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
 import Select from "@/components/common/Select/Select";
+import Button from "@/components/common/Button/Button.tsx";
+import { X, Save } from 'lucide-react';
 
 export default function ProjectsPage() {
     const {
@@ -319,19 +321,22 @@ export default function ProjectsPage() {
 
                             {/* Filter Action Buttons */}
                             <div className={styles.filterActions}>
-                                <button
+                                <Button
                                     onClick={handleSaveFilters}
-                                    className={styles.saveButton}
+                                    variant="ghost"
+                                    color="#E91E63"
                                 >
                                     Saugoti filtrus
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={handleClearFilters}
-                                    className={styles.clearButton}
+                                    variant="ghost"
+                                    color="#666"
+                                    icon={<X className={styles.clearIcon}/>}
+                                    iconPosition="left"
                                 >
-                                    <span className={styles.clearIcon}>✕</span>
                                     Išvalyti
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </FilterBar>
