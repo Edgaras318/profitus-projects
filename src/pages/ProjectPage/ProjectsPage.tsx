@@ -1,4 +1,3 @@
-import React from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import { useFilterState } from '@/hooks/useFilterState';
 import { useAccordionState } from '@/hooks/useAccordionState';
