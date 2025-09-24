@@ -12,6 +12,7 @@ import {
 } from "@/components/common/Accordion/Accordion";
 import Checkbox from "@/components/common/Checkbox/Checkbox";
 import type { FilterInput } from "@/types/project.api.types";
+import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
 
 export default function ProjectsPage() {
     const {
@@ -29,7 +30,7 @@ export default function ProjectsPage() {
 
     // Temporary state for unsaved filters
     const [tempFilters, setTempFilters] = useState<{
-        country: string;
+        countries: string[];
         ratings: string[];
         purpose: string;
         creditDurationMin: string;
@@ -37,7 +38,7 @@ export default function ProjectsPage() {
         campaignId: string;
         privateId: string;
     }>({
-        country: '',
+        countries: [],
         ratings: [],
         purpose: '',
         creditDurationMin: '',
@@ -50,7 +51,7 @@ export default function ProjectsPage() {
     React.useEffect(() => {
         const currentFilters = params.filters || [];
         const newTempFilters = {
-            country: '',
+            countries: [] as string[],
             ratings: [] as string[],
             purpose: '',
             creditDurationMin: '',
@@ -61,7 +62,7 @@ export default function ProjectsPage() {
 
         currentFilters.forEach((filter) => {
             if (filter.id === 'country') {
-                newTempFilters.country = filter.value as string;
+                newTempFilters.countries = filter.value as string[];
             } else if (filter.id === 'initial_rating') {
                 newTempFilters.ratings.push(filter.value as string);
             } else if (filter.id === 'purpose') {
@@ -98,20 +99,29 @@ export default function ProjectsPage() {
         }));
     };
 
+    const handleCountryChange = (country: string, checked: boolean) => {
+        setTempFilters(prev => ({
+            ...prev,
+            countries: checked
+                ? [...prev.countries, country]
+                : prev.countries.filter(c => c !== country)
+        }));
+    };
+
     const handleSaveFilters = () => {
         const newFilters: FilterInput[] = [];
 
-        // Country filter
-        if (tempFilters.country) {
-            newFilters.push({ id: 'country', value: tempFilters.country });
+        // Country filter (multi-select array)
+        if (tempFilters.countries.length > 0) {
+            newFilters.push({ id: 'country', value: tempFilters.countries });
         }
 
-        // Rating filters (multi-select)
-        tempFilters.ratings.forEach(rating => {
-            newFilters.push({ id: 'initial_rating', value: rating });
-        });
+        // Rating filter (multi-select array)
+        if (tempFilters.ratings.length > 0) {
+            newFilters.push({ id: 'initial_rating', value: tempFilters.ratings });
+        }
 
-        // Purpose filter
+        // Purpose filter (single)
         if (tempFilters.purpose) {
             newFilters.push({ id: 'purpose', value: tempFilters.purpose });
         }
@@ -140,9 +150,10 @@ export default function ProjectsPage() {
         setFilters(newFilters);
     };
 
+
     const handleClearFilters = () => {
         setTempFilters({
-            country: '',
+            countries: [],
             ratings: [],
             purpose: '',
             creditDurationMin: '',
@@ -158,6 +169,14 @@ export default function ProjectsPage() {
     if (!data || data.length === 0) return <p>No projects found</p>;
 
     const ratingOptions = ['AAA', 'AA+', 'AA', 'AA-', 'A+', 'A', 'A-', 'BBB+', 'BBB', 'BBB-'];
+
+    const countryOptions = [
+        { code: 'lt', label: 'Lietuva' },
+        { code: 'lv', label: 'Latvija' },
+        { code: 'ee', label: 'Estija' },
+        { code: 'es', label: 'Ispanija' }
+    ];
+
     const purposeOptions = [
         { value: 'real_estate_development', label: 'Nekilnojamojo turto plėtra' },
         { value: 'refinancing', label: 'Refinansavimas' },
@@ -181,18 +200,16 @@ export default function ProjectsPage() {
                                         Šalis
                                     </AccordionHeader>
                                     <AccordionContent index={0}>
-                                        <div className={styles.filterContent}>
-                                            <select
-                                                value={tempFilters.country}
-                                                onChange={(e) => handleTempFilterChange('country', e.target.value)}
-                                                className={styles.select}
-                                            >
-                                                <option value="">Visos šalys</option>
-                                                <option value="lt">Lietuva</option>
-                                                <option value="ee">Estija</option>
-                                                <option value="es">Ispanija</option>
-                                                <option value="lv">Latvija</option>
-                                            </select>
+                                        <div className={styles.checkboxGrid}>
+                                            {countryOptions.map(country => (
+                                                <Checkbox
+                                                    key={country.code}
+                                                    label={country.label}
+                                                    checked={tempFilters.countries.includes(country.code)}
+                                                    onChange={(checked) => handleCountryChange(country.code, checked)}
+                                                    icon={<CountryFlag countryCode={country.code} size="small" />}
+                                                />
+                                            ))}
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
