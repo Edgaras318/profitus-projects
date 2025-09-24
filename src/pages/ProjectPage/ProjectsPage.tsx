@@ -14,8 +14,10 @@ import Checkbox from "@/components/common/Checkbox/Checkbox";
 import type { FilterInput } from "@/types/project.api.types";
 import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
 import Select from "@/components/common/Select/Select";
+import InputText from "@/components/common/InputText/InputText";
+import InputNumber from "@/components/common/InputNumber/InputNumber";
 import Button from "@/components/common/Button/Button.tsx";
-import { X } from 'lucide-react';
+import { X, Search, Hash } from 'lucide-react';
 
 export default function ProjectsPage() {
     const {
@@ -261,22 +263,19 @@ export default function ProjectsPage() {
                                     </AccordionHeader>
                                     <AccordionContent index={3}>
                                         <div className={styles.rangeInputs}>
-                                            <input
-                                                type="number"
+                                            <InputNumber
                                                 placeholder="Min"
                                                 value={tempFilters.creditDurationMin}
-                                                onChange={(e) => handleTempFilterChange('creditDurationMin', e.target.value)}
-                                                className={styles.input}
-                                                min="0"
+                                                onChange={(value) => handleTempFilterChange('creditDurationMin', value)}
+                                                min={0}
+                                                fullWidth
                                             />
-                                            <span className={styles.rangeSeparator}>-</span>
-                                            <input
-                                                type="number"
+                                            <InputNumber
                                                 placeholder="Max"
                                                 value={tempFilters.creditDurationMax}
-                                                onChange={(e) => handleTempFilterChange('creditDurationMax', e.target.value)}
-                                                className={styles.input}
-                                                min="0"
+                                                onChange={(value) => handleTempFilterChange('creditDurationMax', value)}
+                                                min={0}
+                                                fullWidth
                                             />
                                         </div>
                                     </AccordionContent>
@@ -289,12 +288,12 @@ export default function ProjectsPage() {
                                     </AccordionHeader>
                                     <AccordionContent index={4}>
                                         <div className={styles.filterContent}>
-                                            <input
-                                                type="text"
+                                            <InputText
                                                 placeholder="Įveskite kampanijos ID"
                                                 value={tempFilters.campaignId}
-                                                onChange={(e) => handleTempFilterChange('campaignId', e.target.value)}
-                                                className={styles.input}
+                                                onChange={(value) => handleTempFilterChange('campaignId', value)}
+                                                icon={<Hash size={16} />}
+                                                fullWidth
                                             />
                                         </div>
                                     </AccordionContent>
@@ -307,12 +306,12 @@ export default function ProjectsPage() {
                                     </AccordionHeader>
                                     <AccordionContent index={5}>
                                         <div className={styles.filterContent}>
-                                            <input
-                                                type="text"
+                                            <InputText
                                                 placeholder="Įveskite privatų ID"
                                                 value={tempFilters.privateId}
-                                                onChange={(e) => handleTempFilterChange('privateId', e.target.value)}
-                                                className={styles.input}
+                                                onChange={(value) => handleTempFilterChange('privateId', value)}
+                                                icon={<Search size={16} />}
+                                                fullWidth
                                             />
                                         </div>
                                     </AccordionContent>

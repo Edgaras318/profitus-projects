@@ -59,48 +59,25 @@
 
 .main {
   margin-bottom: 2rem;
-
-  /* Ensure the table area is transparent to show background */
   background: transparent;
 }
 
-// Existing filter styles
+// Filter styles
 .filters {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 12px;
-
-
 }
 
 .filterContent {
   padding: 0.5rem 0;
 }
 
-.selectLabel {
-  display: block;
-  width: 100%;
-}
-
-.select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 14px;
-
-  option {
-    background: #333;
-    color: white;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: #E91E63;
-    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
-  }
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem 0;
 }
 
 .checkboxGroup {
@@ -110,6 +87,30 @@
   padding: 0.5rem 0;
 }
 
+.rangeInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+
+  > * {
+    flex: 1;
+  }
+}
+
+// Filter Action Buttons
+.filterActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.clearIcon {
+  font-size: 1rem;
+  color: #e6007e;
+}
+
+// Reset button (for backward compatibility)
 .resetButton {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -229,130 +230,16 @@
     padding: 1rem;
   }
 
+  .checkboxGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .rangeInputs {
+    flex-direction: column;
+  }
+
   .pagination {
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-}
-.input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  background: white;
-  font-size: 0.875rem;
-  color: #374151;
-  transition: all 0.2s ease;
-
-  &::placeholder {
-    color: #9ca3af;
-  }
-
-  &:hover {
-    border-color: #d1d5db;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: #e6007e;
-    box-shadow: 0 0 0 3px rgba(230, 0, 126, 0.1);
-  }
-}
-
-.checkboxGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-}
-
-.checkboxGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-}
-
-.rangeInputs {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-
-  .input {
-    flex: 1;
-  }
-}
-
-.rangeSeparator {
-  color: #9ca3af;
-  font-weight: 500;
-}
-
-// Filter Action Buttons
-.filterActions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
-
-.clearIcon {
-  font-size: 1rem;
-  color: #e6007e;
-}
-
-// Reset button (legacy)
-.resetButton {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  border-radius: 0.75rem;
-  border: 1px solid #d1d5db;
-  background: white;
-  color: #374151;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #f3f4f6;
-  }
-}
-
-// View Controls
-.viewControls {
-  display: flex;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.viewButton {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  background: white;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  span {
-    font-size: 1.25rem;
-  }
-
-  &:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
-  }
-
-  &.active {
-    background: #e6007e;
-    color: white;
-    border-color: #e6007e;
-
-    &:hover {
-      background: #cc006f;
-    }
   }
 }

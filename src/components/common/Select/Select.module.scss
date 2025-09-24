@@ -23,18 +23,18 @@
   min-height: 40px;
 
   &:hover:not(.disabled) {
-    border-color: #8b5cf6;
+    border-color: #e6007e;
     background: #fafafa;
   }
 
   &:focus {
     outline: none;
-    border-color: #8b5cf6;
+    border-color: #e6007e;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 
   &.open {
-    border-color: #8b5cf6;
+    border-color: #e6007e;
     background: #fafafa;
   }
 
@@ -130,7 +130,7 @@
 
   &.selected {
     background: #f5f0ff;
-    color: #8b5cf6;
+    color: #e6007e;
     font-weight: 500;
   }
 }
@@ -148,7 +148,7 @@
 .checkIcon {
   margin-left: auto;
   flex-shrink: 0;
-  color: #8b5cf6;
+  color: #e6007e;
 }
 
 @keyframes slideDown {
