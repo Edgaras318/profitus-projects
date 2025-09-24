@@ -1,0 +1,48 @@
+.filters {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+}
+
+.filterContent {
+  padding: 0.5rem 0;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.rangeInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.filterActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.clearIcon {
+  font-size: 1rem;
+  color: #e6007e;
+}
+
+@media (max-width: 768px) {
+  .checkboxGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .rangeInputs {
+    flex-direction: column;
+  }
+}
