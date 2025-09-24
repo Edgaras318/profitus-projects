@@ -62,7 +62,12 @@ export default function ProjectsTable({
                     <th className={styles.headerCell}>LTV</th>
                     <th className={styles.headerCell}>Surinkta</th>
                     <th className={styles.headerCell}>Tikslas</th>
-                    <th className={styles.headerCell}>Time</th>
+                    <th
+                        className={`${styles.headerCell} ${styles.sortable}`}
+                        onClick={() => handleHeaderClick('credit_duration')}
+                    >
+                        Time {getSortIcon('credit_duration')}
+                    </th>
                     <th className={styles.headerCell}>Users</th>
                     <th className={styles.headerCell}>Date</th>
                     <th className={styles.headerCell}>Progress bar</th>
