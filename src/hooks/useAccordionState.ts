@@ -3,22 +3,48 @@ import { FILTER_ACCORDION_STORAGE_KEY } from '@/constants/projectFilters';
 import { getActiveAccordionItems } from '@/utils/filterHelpers';
 import type { TempFilters } from '@/types/projectFilters.types';
 
+const isBrowser = typeof window !== 'undefined';
+
+const readStoredAccordionState = (): number[] | null => {
+    if (!isBrowser) {
+        return null;
+    }
+
+    const savedState = window.localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
+    if (!savedState) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(savedState);
+    } catch {
+        window.localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
+        return null;
+    }
+};
+
+const storeAccordionState = (items: number[]) => {
+    if (isBrowser) {
+        window.localStorage.setItem(
+            FILTER_ACCORDION_STORAGE_KEY,
+            JSON.stringify(items)
+        );
+    }
+};
+
+const clearStoredAccordionState = () => {
+    if (isBrowser) {
+        window.localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
+    }
+};
+
 export const useAccordionState = (tempFilters: TempFilters) => {
     const [userInteracted, setUserInteracted] = useState<boolean>(() => {
-        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
-        return savedState !== null;
+        return readStoredAccordionState() !== null;
     });
 
     const [accordionActiveItems, setAccordionActiveItems] = useState<number[]>(() => {
-        const savedState = localStorage.getItem(FILTER_ACCORDION_STORAGE_KEY);
-        if (savedState) {
-            try {
-                return JSON.parse(savedState);
-            } catch (e) {
-                localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
-            }
-        }
-        return [];
+        return readStoredAccordionState() ?? [];
     });
 
     useEffect(() => {
@@ -31,12 +57,12 @@ export const useAccordionState = (tempFilters: TempFilters) => {
     const handleAccordionChange = (items: number[]) => {
         setAccordionActiveItems(items);
         setUserInteracted(true);
-        localStorage.setItem(FILTER_ACCORDION_STORAGE_KEY, JSON.stringify(items));
+        storeAccordionState(items);
     };
 
     const resetAccordionState = () => {
         setUserInteracted(false);
-        localStorage.removeItem(FILTER_ACCORDION_STORAGE_KEY);
+        clearStoredAccordionState();
         setAccordionActiveItems([0]);
     };
 
