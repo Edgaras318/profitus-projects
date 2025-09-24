@@ -13,6 +13,7 @@ import {
 import Checkbox from "@/components/common/Checkbox/Checkbox";
 import type { FilterInput } from "@/types/project.api.types";
 import CountryFlag from "@/components/common/CountryFlag/CountryFlag.tsx";
+import Select from "@/components/common/Select/Select";
 
 export default function ProjectsPage() {
     const {
@@ -96,6 +97,12 @@ export default function ProjectsPage() {
             ratings: checked
                 ? [...prev.ratings, rating]
                 : prev.ratings.filter(r => r !== rating)
+        }));
+    };
+    const handlePurposeChange = (purpose: string, checked: boolean) => {
+        setTempFilters(prev => ({
+            ...prev,
+            purpose: checked ? purpose : (prev.purpose === purpose ? '' : prev.purpose)
         }));
     };
 
@@ -240,16 +247,13 @@ export default function ProjectsPage() {
                                     </AccordionHeader>
                                     <AccordionContent index={2}>
                                         <div className={styles.filterContent}>
-                                            <select
+                                            <Select
+                                                options={purposeOptions}
                                                 value={tempFilters.purpose}
-                                                onChange={(e) => handleTempFilterChange('purpose', e.target.value)}
-                                                className={styles.select}
-                                            >
-                                                <option value="">Visos paskirtys</option>
-                                                {purposeOptions.map(opt => (
-                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                                ))}
-                                            </select>
+                                                onChange={(value) => handleTempFilterChange('purpose', value)}
+                                                placeholder="Visos paskirtys"
+                                                fullWidth
+                                            />
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
