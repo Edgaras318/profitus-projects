@@ -144,7 +144,7 @@ export default function ProjectsTable({
                 type={errorType}
                 error={error}
                 onRetry={onRetry}
-                showDetails={'development' === 'development'}
+                showDetails={import.meta.env.MODE === 'development'}
             />
         );
     }
