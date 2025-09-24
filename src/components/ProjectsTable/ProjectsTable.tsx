@@ -82,7 +82,7 @@ export default function ProjectsTable({
                 type={errorType}
                 error={error}
                 onRetry={onRetry}
-                showDetails={process.env.NODE_ENV === 'development'}
+                showDetails={'development' === 'development'}
             />
         );
     }
