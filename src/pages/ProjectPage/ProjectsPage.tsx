@@ -52,6 +52,30 @@ export default function ProjectsPage() {
         privateId: ''
     });
 
+    // Track if user has manually interacted with accordions
+    const [userInteracted, setUserInteracted] = useState<boolean>(() => {
+        // Check if there's saved state in localStorage
+        const savedState = localStorage.getItem('filterAccordionState');
+        return savedState !== null;
+    });
+
+    // Add state for accordion items with localStorage support
+    const [accordionActiveItems, setAccordionActiveItems] = useState<number[]>(() => {
+        // FIRST PRIORITY: Check localStorage for user preferences
+        const savedState = localStorage.getItem('filterAccordionState');
+        if (savedState) {
+            try {
+                return JSON.parse(savedState);
+            } catch (e) {
+                // Invalid JSON, ignore
+                localStorage.removeItem('filterAccordionState');
+            }
+        }
+
+        // If no saved state, return empty array (will be calculated in useEffect)
+        return [];
+    });
+
     // Initialize temp filters from current params on mount
     React.useEffect(() => {
         const currentFilters = params.filters || [];
@@ -85,6 +109,37 @@ export default function ProjectsPage() {
 
         setTempFilters(newTempFilters);
     }, [params.filters]);
+
+    // Calculate which accordions should be open based on filter values
+    // Only runs if user hasn't interacted (no localStorage)
+    React.useEffect(() => {
+        // Only auto-open if user hasn't manually interacted (no localStorage)
+        if (!userInteracted) {
+            const itemsToOpen: number[] = [];
+
+            // Check each filter category for values
+            if (tempFilters.countries.length > 0) itemsToOpen.push(0);
+            if (tempFilters.ratings.length > 0) itemsToOpen.push(1);
+            if (tempFilters.purpose) itemsToOpen.push(2);
+            if (tempFilters.creditDurationMin || tempFilters.creditDurationMax) itemsToOpen.push(3);
+            if (tempFilters.campaignId) itemsToOpen.push(4);
+            if (tempFilters.privateId) itemsToOpen.push(5);
+
+            // If no filters have values, open the first accordion by default
+            if (itemsToOpen.length === 0) {
+                itemsToOpen.push(0);
+            }
+
+            setAccordionActiveItems(itemsToOpen);
+        }
+    }, [tempFilters, userInteracted]);
+
+    const handleAccordionChange = (items: number[]) => {
+        setAccordionActiveItems(items);
+        setUserInteracted(true);
+        // Save to localStorage
+        localStorage.setItem('filterAccordionState', JSON.stringify(items));
+    };
 
     const handleSort = (column: "basic_interest" | "initial_rating" | "credit_duration") => {
         const newSort = toggleSort(params.sort, column);
@@ -155,7 +210,6 @@ export default function ProjectsPage() {
         setFilters(newFilters);
     };
 
-
     const handleClearFilters = () => {
         setTempFilters({
             countries: [],
@@ -167,6 +221,12 @@ export default function ProjectsPage() {
             privateId: ''
         });
         resetFilters();
+
+        // Reset accordion state and clear localStorage
+        setUserInteracted(false);
+        localStorage.removeItem('filterAccordionState');
+        // Open first accordion by default after clearing
+        setAccordionActiveItems([0]);
     };
 
     if (isLoading) return <p>Loading projects...</p>;
@@ -198,10 +258,14 @@ export default function ProjectsPage() {
                 <div className={styles.headerControls}>
                     <FilterBar>
                         <div className={styles.filters}>
-                            <Accordion multiple={true} defaultActiveIndex={[0, 1, 2]}>
+                            <Accordion
+                                multiple={true}
+                                activeItems={accordionActiveItems}
+                                onItemsChange={handleAccordionChange}
+                            >
                                 {/* Country Filter */}
                                 <AccordionItem index={0}>
-                                    <AccordionHeader index={0}  >
+                                    <AccordionHeader index={0}>
                                         Šalis
                                     </AccordionHeader>
                                     <AccordionContent index={0}>
@@ -221,7 +285,7 @@ export default function ProjectsPage() {
 
                                 {/* Initial Rating Filter */}
                                 <AccordionItem index={1}>
-                                    <AccordionHeader index={1}  >
+                                    <AccordionHeader index={1}>
                                         Pradinis reitingas
                                     </AccordionHeader>
                                     <AccordionContent index={1}>
@@ -240,7 +304,7 @@ export default function ProjectsPage() {
 
                                 {/* Purpose/Type Filter */}
                                 <AccordionItem index={2}>
-                                    <AccordionHeader index={2}  >
+                                    <AccordionHeader index={2}>
                                         Paskirtis / Tipas
                                     </AccordionHeader>
                                     <AccordionContent index={2}>
@@ -258,7 +322,7 @@ export default function ProjectsPage() {
 
                                 {/* Credit Duration Filter */}
                                 <AccordionItem index={3}>
-                                    <AccordionHeader index={3}  >
+                                    <AccordionHeader index={3}>
                                         Kredito trukmė (mėn.)
                                     </AccordionHeader>
                                     <AccordionContent index={3}>
@@ -283,7 +347,7 @@ export default function ProjectsPage() {
 
                                 {/* Campaign ID Filter */}
                                 <AccordionItem index={4}>
-                                    <AccordionHeader index={4}  >
+                                    <AccordionHeader index={4}>
                                         Kampanijos ID
                                     </AccordionHeader>
                                     <AccordionContent index={4}>
@@ -301,7 +365,7 @@ export default function ProjectsPage() {
 
                                 {/* Private ID Filter */}
                                 <AccordionItem index={5}>
-                                    <AccordionHeader index={5}  >
+                                    <AccordionHeader index={5}>
                                         Privatus ID
                                     </AccordionHeader>
                                     <AccordionContent index={5}>

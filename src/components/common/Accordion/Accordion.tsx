@@ -14,6 +14,8 @@ export type AccordionProps = {
     children: React.ReactNode;
     multiple: boolean;
     defaultActiveIndex?: number | number[] | null;
+    activeItems?: number[];
+    onItemsChange?: (items: number[]) => void;
     className?: string;
 };
 
@@ -36,15 +38,15 @@ export type AccordionContentProps = {
     className?: string;
 };
 
-
-// Main Accordion Component
 export function Accordion({
                               children,
                               multiple = false,
                               defaultActiveIndex = null,
+                              activeItems: controlledActiveItems,  // Add this
+                              onItemsChange,  // Add this
                               className = ""
                           }: AccordionProps) {
-    const [activeItems, setActiveItems] = useState<number[]>(() => {
+    const [internalActiveItems, setInternalActiveItems] = useState<number[]>(() => {
         if (defaultActiveIndex === null || defaultActiveIndex === undefined) {
             return [];
         }
@@ -54,8 +56,11 @@ export function Accordion({
         return [defaultActiveIndex];
     });
 
+    // Use controlled items if provided, otherwise use internal state
+    const activeItems = controlledActiveItems !== undefined ? controlledActiveItems : internalActiveItems;
+
     const toggleItem = (index: number) => {
-        setActiveItems((prev) => {
+        const updater = (prev: number[]) => {
             if (multiple) {
                 if (prev.includes(index)) {
                     return prev.filter(i => i !== index);
@@ -67,7 +72,15 @@ export function Accordion({
                 }
                 return [index];
             }
-        });
+        };
+
+        if (controlledActiveItems !== undefined && onItemsChange) {
+            // Controlled mode
+            onItemsChange(updater(activeItems));
+        } else {
+            // Uncontrolled mode
+            setInternalActiveItems(updater);
+        }
     };
 
     const contextValue: AccordionContextType = {
