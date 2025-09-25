@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import type { PaginationMeta } from '@/types/project.types.ts';
 import styles from './Pagination.module.scss';
+import {getPageNumbers} from "@/utils/paginationHelper.ts";
 
 interface EnhancedPaginationProps {
     meta: PaginationMeta;
@@ -22,72 +23,11 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
                                                        }) => {
     const { current_page, last_page } = meta;
 
-    const pageNumbers = useMemo(() => {
-        const pages: (number | string)[] = [];
+    const pageNumbers = useMemo(
+        () => getPageNumbers(current_page, last_page, maxPageButtons),
+        [current_page, last_page, maxPageButtons]
+    );
 
-        if (last_page <= maxPageButtons) {
-            for (let i = 1; i <= last_page; i++) {
-                pages.push(i);
-            }
-        } else {
-            pages.push(1);
-
-            const availableSlots = maxPageButtons - 2; // reserve for first & last
-            const middleSlots = Math.max(1, availableSlots - 2); // possible ellipses
-            const halfRange = Math.floor(middleSlots / 2);
-
-            const needsStartEllipsis = current_page > 2 + halfRange;
-            const needsEndEllipsis = current_page < last_page - 1 - halfRange;
-
-            const actualMiddleSlots = availableSlots - (needsStartEllipsis ? 1 : 0) - (needsEndEllipsis ? 1 : 0);
-
-            let start: number;
-            let end: number;
-
-            if (!needsStartEllipsis && !needsEndEllipsis) {
-                start = 2;
-                end = last_page - 1;
-            } else if (!needsStartEllipsis) {
-                start = 2;
-                end = Math.min(start + actualMiddleSlots - 1, last_page - 1);
-            } else if (!needsEndEllipsis) {
-                end = last_page - 1;
-                start = Math.max(2, end - actualMiddleSlots + 1);
-            } else {
-                const halfActual = Math.floor(actualMiddleSlots / 2);
-                start = current_page - halfActual;
-                end = current_page + halfActual;
-
-                if (actualMiddleSlots % 2 !== 0) {
-                    if (end - start + 1 < actualMiddleSlots) {
-                        end++;
-                    }
-                }
-
-                // Ensure window size matches actualMiddleSlots
-                while (end - start + 1 > actualMiddleSlots) {
-                    if (end > current_page) end--;
-                    else if (start < current_page) start++;
-                    else end--;
-                }
-
-                start = Math.max(2, start);
-                end = Math.min(last_page - 1, end);
-            }
-
-            if (start > 2) pages.push('...');
-
-            for (let i = start; i <= end; i++) {
-                pages.push(i);
-            }
-
-            if (end < last_page - 1) pages.push('...');
-
-            pages.push(last_page);
-        }
-
-        return pages;
-    }, [current_page, last_page, maxPageButtons]);
 
     const handlePageClick = (page: number | string) => {
         if (typeof page === 'number' && page !== meta.current_page) {
