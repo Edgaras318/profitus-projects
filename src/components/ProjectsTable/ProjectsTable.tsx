@@ -203,6 +203,8 @@ export default function ProjectsTable({
                     <th className={styles.headerCell}>LTV</th>
                     <th className={styles.headerCell}>Surinkta</th>
                     <th className={styles.headerCell}>Tikslas</th>
+                    <th className={styles.headerCell}>Time</th>
+                    <th className={styles.headerCell}>Users</th>
                     <th
                         scope="col"
                         className={`${styles.headerCell} ${styles.sortable}`}
@@ -213,11 +215,9 @@ export default function ProjectsTable({
                             className={styles.sortButton}
                             onClick={() => handleHeaderClick("credit_duration")}
                         >
-                            Time {getSortIcon("credit_duration")}
+                            Date {getSortIcon("credit_duration")}
                         </button>
                     </th>
-                    <th className={styles.headerCell}>Users</th>
-                    <th className={styles.headerCell}>Date</th>
                     <th className={styles.headerCell}>Progress bar</th>
                     <th
                         scope="col"
@@ -316,7 +316,7 @@ export default function ProjectsTable({
 
                             {/* Time */}
                             <td className={styles.cell}>
-                                {project.credit_duration} d.
+                                {project.days_to_get_money ? `${project.days_to_get_money} d.` : '—'}
                             </td>
 
                             {/* Users/Investors */}
@@ -326,7 +326,7 @@ export default function ProjectsTable({
 
                             {/* Date */}
                             <td className={styles.cell}>
-                                {project.days_to_get_money ? `${project.days_to_get_money} men.` : '—'}
+                                {project.credit_duration} men.
                             </td>
 
                             {/* Progress Bar */}
