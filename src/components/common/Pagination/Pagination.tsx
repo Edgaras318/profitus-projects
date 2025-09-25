@@ -25,16 +25,17 @@ interface EnhancedPaginationProps {
 }
 
 const Pagination: React.FC<EnhancedPaginationProps> = ({
-                                                                   meta,
-                                                                   onPageChange,
-                                                                   onLimitChange,
-                                                                   limitOptions = [10, 20, 50, 100],
-                                                                   maxPageButtons = 7,
-                                                                   className = ''
-                                                               }) => {
+                                                           meta,
+                                                           onPageChange,
+                                                           onLimitChange,
+                                                           limitOptions = [10, 20, 50, 100],
+                                                           maxPageButtons = 7,
+                                                           className = ''
+                                                       }) => {
+    const { current_page, last_page } = meta;
+
     const pageNumbers = useMemo(() => {
         const pages: (number | string)[] = [];
-        const { current_page, last_page } = meta;
 
         if (last_page <= maxPageButtons) {
             // Show all pages if total is less than max
@@ -73,7 +74,7 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
         }
 
         return pages;
-    }, [meta.current_page, meta.last_page, maxPageButtons]);
+    }, [current_page, last_page, maxPageButtons]);
 
     const handlePageClick = (page: number | string) => {
         if (typeof page === 'number' && page !== meta.current_page) {
