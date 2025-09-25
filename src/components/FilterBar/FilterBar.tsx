@@ -8,6 +8,7 @@ export type FilterBarProps = {
     onToggle: () => void;
     children?: React.ReactNode;
     className?: string;
+    toggleButtonRef?: React.Ref<HTMLButtonElement>;
 };
 
 export default function FilterBar({
@@ -16,6 +17,7 @@ export default function FilterBar({
                                       onToggle,
                                       children,
                                       className,
+                                      toggleButtonRef,
                                   }: FilterBarProps) {
     return (
         <div className={`${styles.wrapper} ${className || ""}`}>
@@ -24,6 +26,7 @@ export default function FilterBar({
                 aria-expanded={isOpen}
                 onClick={onToggle}
                 className={styles.toggleButton}
+                ref={toggleButtonRef}
             >
                 <span className={styles.labelWrapper}>
                     <FilterIcon className={styles.icon} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Search, Hash } from 'lucide-react';
 import FilterBar from '@/components/FilterBar/FilterBar';
 import {
@@ -39,21 +39,25 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                                                            onClearFilters
                                                        }) => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
     const handleSave = () => {
         onSaveFilters();
         setIsFilterOpen(false); // close after save
+        toggleButtonRef.current?.focus(); // return focus to toggle button
     };
 
     const handleClear = () => {
         onClearFilters();
         setIsFilterOpen(false); // close after clear
+        toggleButtonRef.current?.focus(); // return focus to toggle button
     };
 
     return (
         <FilterBar
             isOpen={isFilterOpen}
             onToggle={() => setIsFilterOpen((prev) => !prev)}
+            toggleButtonRef={toggleButtonRef}
         >
             <div className={styles.filters}>
                 <Accordion
