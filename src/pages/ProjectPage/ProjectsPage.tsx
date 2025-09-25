@@ -8,6 +8,7 @@ import ProjectFilters from '@/components/ProjectFilters/ProjectFilters';
 import ViewControls from '@/components/ViewControls/ViewControls';
 import styles from './ProjectsPage.module.scss';
 import Pagination from "@/components/common/Pagination/Pagination.tsx";
+import { ITEMS_PER_PAGE_OPTIONS } from '@/constants/pagination';
 
 export default function ProjectsPage() {
     const {
@@ -102,7 +103,7 @@ export default function ProjectsPage() {
                     meta={meta}
                     onPageChange={setPage}
                     onLimitChange={setLimit}
-                    limitOptions={[10, 20, 50, 100]}
+                    limitOptions={ITEMS_PER_PAGE_OPTIONS}
                     maxPageButtons={7}
                 />
             )}
