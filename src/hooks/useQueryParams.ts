@@ -28,7 +28,9 @@ export function useQueryParams() {
             try {
                 const parsed = JSON.parse(s);
                 if (parsed.id) sort.push(parsed);
-            } catch {}
+            } catch {
+                // Ignore invalid JSON in query params
+            }
         });
 
         const filters: FilterInput[] = [];
@@ -36,14 +38,16 @@ export function useQueryParams() {
             try {
                 const parsed = JSON.parse(f);
                 if (parsed.id) filters.push(parsed);
-            } catch {}
+            } catch {
+                // Ignore invalid JSON in query params
+            }
         });
 
         return { page, limit, sort, filters };
     }, [searchParams]);
 
     const updateParams = useCallback((updates: Partial<QueryParams>) => {
-        setSearchParams(prev => {
+        setSearchParams(() => {
             const newParams = new URLSearchParams();
 
             const page = updates.page ?? params.page;
