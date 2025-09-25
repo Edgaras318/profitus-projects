@@ -6,9 +6,8 @@ import ProjectsTable from '@/components/ProjectsTable/ProjectsTable';
 import ProjectsHeader from '@/components/ProjectsHeader/ProjectsHeader';
 import ProjectFilters from '@/components/ProjectFilters/ProjectFilters';
 import ViewControls from '@/components/ViewControls/ViewControls';
-import Pagination from '@/components/Pagination/Pagination';
-import LimitSelector from '@/components/LimitSelector/LimitSelector';
 import styles from './ProjectsPage.module.scss';
+import Pagination from "@/components/common/Pagination/Pagination.tsx";
 
 export default function ProjectsPage() {
     const {
@@ -99,17 +98,13 @@ export default function ProjectsPage() {
             </main>
 
             {meta && !isLoading && !error && data && data.length > 0 && (
-                <>
-                    <Pagination
-                        currentPage={meta.current_page}
-                        lastPage={meta.last_page}
-                        onPageChange={setPage}
-                    />
-                    <LimitSelector
-                        value={params.limit}
-                        onChange={setLimit}
-                    />
-                </>
+                <Pagination
+                    meta={meta}
+                    onPageChange={setPage}
+                    onLimitChange={setLimit}
+                    limitOptions={[10, 20, 50, 100]}
+                    maxPageButtons={7}
+                />
             )}
         </div>
     );
