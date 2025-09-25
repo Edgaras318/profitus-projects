@@ -39,18 +39,19 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                                                            onClearFilters
                                                        }) => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const toggleButtonRef = useRef<HTMLButtonElement>(null);
+    // Fix: Allow null in the type definition for strict TypeScript compliance
+    const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
 
     const handleSave = () => {
         onSaveFilters();
-        setIsFilterOpen(false); // close after save
-        toggleButtonRef.current?.focus(); // return focus to toggle button
+        setIsFilterOpen(false);
+        toggleButtonRef.current?.focus();
     };
 
     const handleClear = () => {
         onClearFilters();
-        setIsFilterOpen(false); // close after clear
-        toggleButtonRef.current?.focus(); // return focus to toggle button
+        setIsFilterOpen(false);
+        toggleButtonRef.current?.focus();
     };
 
     return (
