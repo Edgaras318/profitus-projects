@@ -47,32 +47,30 @@ export function useQueryParams() {
     }, [searchParams]);
 
     const updateParams = useCallback((updates: Partial<QueryParams>) => {
-        setSearchParams(() => {
-            const newParams = new URLSearchParams();
+        const newParams = new URLSearchParams();
 
-            const page = updates.page ?? params.page;
-            const limit = updates.limit ?? params.limit;
-            const sort = updates.sort ?? params.sort;
-            const filters = updates.filters ?? params.filters;
+        const page = updates.page ?? params.page;
+        const limit = updates.limit ?? params.limit;
+        const sort = updates.sort ?? params.sort;
+        const filters = updates.filters ?? params.filters;
 
-            if (page !== DEFAULT_PARAMS.page) {
-                newParams.set('page', String(page));
-            }
+        if (page !== DEFAULT_PARAMS.page) {
+            newParams.set('page', String(page));
+        }
 
-            if (limit !== DEFAULT_PARAMS.limit) {
-                newParams.set('limit', String(limit));
-            }
+        if (limit !== DEFAULT_PARAMS.limit) {
+            newParams.set('limit', String(limit));
+        }
 
-            sort.forEach(s => {
-                newParams.append('sort[]', JSON.stringify(s));
-            });
-
-            filters.forEach(f => {
-                newParams.append('filters[]', JSON.stringify(f));
-            });
-
-            return newParams;
+        sort.forEach(s => {
+            newParams.append('sort[]', JSON.stringify(s));
         });
+
+        filters.forEach(f => {
+            newParams.append('filters[]', JSON.stringify(f));
+        });
+
+        setSearchParams(newParams);
     }, [params, setSearchParams]);
 
     const setPage = useCallback((page: number) => {
