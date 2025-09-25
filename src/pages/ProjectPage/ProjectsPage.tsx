@@ -1,3 +1,4 @@
+import { useQueryParams } from '@/hooks/useQueryParams';
 import { useProjects } from '@/hooks/useProjects';
 import { useFilterState } from '@/hooks/useFilterState';
 import { useAccordionState } from '@/hooks/useAccordionState';
@@ -12,18 +13,21 @@ import { ITEMS_PER_PAGE_OPTIONS } from '@/constants/pagination';
 
 export default function ProjectsPage() {
     const {
-        data,
-        meta,
-        isLoading,
-        error,
         params,
         setPage,
         setLimit,
         setSort,
         setFilters,
-        resetFilters,
-        refetch,
-    } = useProjects({ limit: 10 });
+        resetFilters
+    } = useQueryParams();
+
+    const {
+        data,
+        meta,
+        isLoading,
+        error,
+        refetch
+    } = useProjects(params);
 
     const {
         tempFilters,

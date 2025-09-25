@@ -1,23 +1,9 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getProjects } from "@/api/projects.service";
 import type { ProjectCardResponse, PaginationMeta } from "@/types/project.types";
-import type { SortInput, FilterInput } from "@/types/project.api.types";
+import type { QueryParams } from "./useQueryParams";
 
-type Params = {
-    page: number;
-    limit: number;
-    sort: SortInput[];
-    filters: FilterInput[];
-};
-
-export function useProjects(initialParams?: Partial<Params>) {
-    const [params, setParams] = useState<Params>({
-        page: initialParams?.page ?? 1,
-        limit: initialParams?.limit ?? 10,
-        sort: initialParams?.sort ?? [],
-        filters: initialParams?.filters ?? [],
-    });
-
+export function useProjects(params: QueryParams) {
     const [data, setData] = useState<ProjectCardResponse[]>([]);
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -56,22 +42,7 @@ export function useProjects(initialParams?: Partial<Params>) {
             });
 
         return () => controller.abort();
-    }, [params, refreshKey]);
-
-    const setPage = (page: number) =>
-        setParams((prev) => ({ ...prev, page }));
-
-    const setLimit = (limit: number) =>
-        setParams((prev) => ({ ...prev, limit, page: 1 }));
-
-    const setSort = (sort: SortInput[]) =>
-        setParams((prev) => ({ ...prev, sort, page: 1 }));
-
-    const setFilters = (filters: FilterInput[]) =>
-        setParams((prev) => ({ ...prev, filters, page: 1 }));
-
-    const resetFilters = () =>
-        setParams((prev) => ({ ...prev, filters: [], page: 1 }));
+    }, [params.page, params.limit, params.sort, params.filters, refreshKey]);
 
     const refetch = useCallback(() => {
         setRefreshKey(prev => prev + 1);
@@ -82,12 +53,6 @@ export function useProjects(initialParams?: Partial<Params>) {
         meta,
         isLoading,
         error,
-        params,
-        setPage,
-        setLimit,
-        setSort,
-        setFilters,
-        resetFilters,
-        refetch,
+        refetch
     };
 }
