@@ -1,19 +1,7 @@
 import React, { useMemo } from 'react';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import type { PaginationMeta } from '@/types/project.types.ts';
 import styles from './Pagination.module.scss';
-
-interface PaginationMeta {
-    current_page: number;
-    from: number;
-    last_page: number;
-    path: string;
-    per_page: number;
-    to: number;
-    total: number;
-    first_page_url: string;
-    last_page_url: string;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-}
 
 interface EnhancedPaginationProps {
     meta: PaginationMeta;
@@ -46,26 +34,66 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
             // Always show first page
             pages.push(1);
 
-            if (current_page > 3) {
+            // Calculate available slots for middle pages
+            // We reserve 2 slots for first and last page
+            // We may need up to 2 slots for ellipses
+            const availableSlots = maxPageButtons - 2; // Subtract first and last
+            const middleSlots = Math.max(1, availableSlots - 2); // Reserve space for potential ellipses
+
+            // Calculate the range of pages to show around current page
+            const halfRange = Math.floor(middleSlots / 2);
+
+            // Determine if we need ellipsis before
+            const needsStartEllipsis = current_page > 2 + halfRange;
+            // Determine if we need ellipsis after
+            const needsEndEllipsis = current_page < last_page - 1 - halfRange;
+
+            // Calculate actual available slots for numbers (not ellipses)
+            const actualMiddleSlots = availableSlots - (needsStartEllipsis ? 1 : 0) - (needsEndEllipsis ? 1 : 0);
+
+            let start: number;
+            let end: number;
+
+            if (!needsStartEllipsis && !needsEndEllipsis) {
+                // All pages between first and last can fit
+                start = 2;
+                end = last_page - 1;
+            } else if (!needsStartEllipsis) {
+                // Pages are clustered at the start
+                start = 2;
+                end = Math.min(start + actualMiddleSlots - 1, last_page - 1);
+            } else if (!needsEndEllipsis) {
+                // Pages are clustered at the end
+                end = last_page - 1;
+                start = Math.max(2, end - actualMiddleSlots + 1);
+            } else {
+                // Current page is in the middle, show range around it
+                const halfActual = Math.floor(actualMiddleSlots / 2);
+                start = current_page - halfActual;
+                end = current_page + halfActual;
+
+                // Adjust if we have an odd number of slots (favor showing more after current)
+                if (actualMiddleSlots % 2 !== 0) {
+                    end++;
+                }
+
+                // Ensure we don't overlap with first/last pages
+                start = Math.max(2, start);
+                end = Math.min(last_page - 1, end);
+            }
+
+            // Add start ellipsis if needed
+            if (start > 2) {
                 pages.push('...');
             }
 
-            // Calculate range around current page
-            let start = Math.max(2, current_page - 1);
-            let end = Math.min(last_page - 1, current_page + 1);
-
-            // Adjust range if at boundaries
-            if (current_page <= 3) {
-                end = Math.min(5, last_page - 1);
-            } else if (current_page >= last_page - 2) {
-                start = Math.max(2, last_page - 4);
-            }
-
+            // Add the calculated range
             for (let i = start; i <= end; i++) {
                 pages.push(i);
             }
 
-            if (current_page < last_page - 2) {
+            // Add end ellipsis if needed
+            if (end < last_page - 1) {
                 pages.push('...');
             }
 
@@ -114,9 +142,7 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
                     aria-label="Pirmas puslapis"
                     title="Pirmas puslapis"
                 >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M11 17L6 12L11 7M18 17L13 12L18 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <ChevronsLeft size={16} />
                 </button>
 
                 {/* Previous page button */}
@@ -127,9 +153,7 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
                     aria-label="Ankstesnis puslapis"
                     title="Ankstesnis"
                 >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <ChevronLeft size={16} />
                 </button>
 
                 {/* Page number buttons */}
@@ -156,9 +180,7 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
                     aria-label="Kitas puslapis"
                     title="Kitas"
                 >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <ChevronRight size={16} />
                 </button>
 
                 {/* Last page button */}
@@ -169,9 +191,7 @@ const Pagination: React.FC<EnhancedPaginationProps> = ({
                     aria-label="Paskutinis puslapis"
                     title="Paskutinis puslapis"
                 >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M13 17L18 12L13 7M6 17L11 12L6 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <ChevronsRight size={16} />
                 </button>
             </div>
 
