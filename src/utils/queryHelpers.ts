@@ -7,13 +7,11 @@ export function toggleSort(
     const existing = current.find(s => s.id === column);
 
     if (!existing) {
-        return [...current, { id: column, desc: false }];
+        return [{ id: column, desc: false }];
     }
 
     if (!existing.desc) {
-        return current.map(s =>
-            s.id === column ? { ...s, desc: true } : s
-        );
+        return [{ id: column, desc: true }];
     }
 
     return current.filter(s => s.id !== column);

@@ -1,0 +1,30 @@
+// Button status styles
+.buttonWrapper {
+  &.fundedButton {
+    button {
+      background: #c8b8e8 !important;
+      color: white !important;
+      border: none !important;
+      cursor: not-allowed !important;
+      opacity: 1 !important;
+      font-size: 11px !important;
+      padding: 6px 10px !important;
+      white-space: nowrap;
+
+      &:hover {
+        background: #c8b8e8 !important;
+        transform: none !important;
+      }
+    }
+  }
+
+  &.comingSoonButton {
+    button {
+      background: #ffa726 !important;
+      color: white !important;
+      // ... etc
+    }
+  }
+
+  // ... other button states
+}
