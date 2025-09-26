@@ -369,7 +369,7 @@ This project is **private and proprietary**. All rights reserved.
 
 <div align="center">
 
-**Built with ❤️ by the Profitus Team**
+**Built BY Edgaras Spiridonovas**
 
 [Report Bug](https://github.com/Edgaras318/profitus-projects/issues) • [Request Feature](https://github.com/Edgaras318/profitus-projects/issues)
 
