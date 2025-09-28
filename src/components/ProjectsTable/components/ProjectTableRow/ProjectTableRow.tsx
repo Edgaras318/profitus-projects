@@ -24,84 +24,95 @@ export const ProjectTableRow: React.FC<ProjectTableRowProps> = ({
                                                                     project,
                                                                     onProjectAction
                                                                 }) => {
-    const progress = calculateProjectProgress(
-        project.invested_amount,
-        project.required_amount
-    );
+    const {
+        pid,
+        project_name,
+        image_url,
+        security_measures,
+        status,
+        invested_amount,
+        required_amount,
+        basic_interest,
+        max_bonus_interest,
+        initial_rating,
+        country,
+        loan_ratio_external,
+        loan_ratio_max,
+        days_to_get_money,
+        funded_duration,
+        investors,
+        credit_duration
+    } = project;
 
-    // Fix: Convert null to undefined for max_bonus_interest
-    const interestRange = formatInterestRate(
-        project.basic_interest,
-        project.max_bonus_interest ?? undefined
-    );
-
-    const parsedDaysToGetMoney = Number(project.days_to_get_money);
-    const daysToGetMoney = Number.isNaN(parsedDaysToGetMoney) ? undefined : parsedDaysToGetMoney;
+    const progress = calculateProjectProgress(invested_amount, required_amount);
+    const interestRange = formatInterestRate(basic_interest, max_bonus_interest);
+    const creditDurationDisplay = formatMonths(credit_duration);
+    const timeDisplay = status === 'open_for_investments'
+        ? formatDuration(days_to_get_money)
+        : funded_duration || '—';
 
     return (
         <tr className={styles.row}>
             {/* Project Image */}
             <td className={styles.cell}>
                 <ProjectTableImage
-                    imageUrl={project.image_url ?? undefined}  // Fix: Convert null to undefined
-                    projectName={project.project_name}
-                    securityMeasure={project.security_measures}
-                    status={project.status}
+                    imageUrl={image_url ?? undefined}
+                    projectName={project_name}
+                    securityMeasure={security_measures}
+                    status={status}
                 />
             </td>
 
             {/* Project Name */}
             <td className={styles.cell}>
                 <div className={styles.projectTitle}>
-                    {project.project_name}
+                    {project_name}
                 </div>
             </td>
 
             {/* Rating */}
             <td className={styles.cell}>
-                <Rating rating={project.initial_rating} />
+                <Rating rating={initial_rating} />
             </td>
 
             {/* Country */}
             <td className={styles.cell}>
-                {project.country && (
-                    <CountryFlag countryCode={project.country} />
+                {country && (
+                    <CountryFlag countryCode={country} />
                 )}
             </td>
 
             {/* LTV */}
             <td className={styles.cell}>
                 <LTVCell
-                    loanRatioExternal={project.loan_ratio_external}
-                    loanRatioMax={project.loan_ratio_max}
+                    loanRatioExternal={loan_ratio_external}
+                    loanRatioMax={loan_ratio_max}
                 />
             </td>
 
             {/* Invested Amount */}
             <td className={styles.cell}>
-                {formatProjectCurrency(project.invested_amount)}
+                {formatProjectCurrency(invested_amount)}
             </td>
 
             {/* Required Amount */}
             <td className={styles.cell}>
-                {formatProjectCurrency(project.required_amount)}
+                {formatProjectCurrency(required_amount)}
             </td>
 
             {/* Time */}
             <td className={styles.cell}>
-                {project.status === 'open_for_investments'
-                    ? formatDuration(daysToGetMoney)
-                    : project.funded_duration}
+                {timeDisplay}
             </td>
 
             {/* Users/Investors */}
             <td className={styles.cell}>
-                {project.investors}
+                {investors}
             </td>
 
             {/* Date */}
             <td className={styles.cell}>
-                {formatMonths(Number(project.credit_duration))}  {/* Fix: Convert string to number */}
+                {creditDurationDisplay}
             </td>
 
             {/* Progress Bar */}
@@ -115,16 +126,16 @@ export const ProjectTableRow: React.FC<ProjectTableRowProps> = ({
 
             {/* Interest Rate */}
             <td className={styles.cell}>
-        <span className={styles.interestRate}>
-          {interestRange}
-        </span>
+                <span className={styles.interestRate}>
+                    {interestRange}
+                </span>
             </td>
 
             {/* Action Button */}
             <td className={styles.cell}>
                 <ActionButtonCell
-                    status={project.status}
-                    projectId={project.pid}
+                    status={status}
+                    projectId={pid}
                     onAction={onProjectAction}
                 />
             </td>

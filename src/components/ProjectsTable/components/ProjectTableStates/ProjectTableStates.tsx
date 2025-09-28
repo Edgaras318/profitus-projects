@@ -17,16 +17,16 @@ interface ProjectTableStatesProps {
 const PROJECTS_TABLE_COLUMN_TYPES: ColumnType[] = [
     'image',
     'text',
-    'text',
-    'text',
     'rating',
     'text',
     'text',
     'text',
     'text',
     'text',
+    'text',
+    'text',
     'progress',
-    'badge',
+    'text',
     'button'
 ];
 
@@ -50,16 +50,18 @@ export const ProjectTableStates: React.FC<ProjectTableStatesProps> = ({
     }
 
     if (error) {
-        const errorType = error.toString().toLowerCase().includes('network')
+        const errorMessage = typeof error === 'string' ? error : error.message ?? error.toString();
+        const normalizedMessage = errorMessage.toLowerCase();
+        const errorType = normalizedMessage.includes('network')
             ? 'network'
-            : error.toString().toLowerCase().includes('server')
+            : normalizedMessage.includes('server')
                 ? 'server'
                 : 'general';
 
         return (
             <ErrorState
                 type={errorType}
-                error={error}
+                error={errorMessage}
                 onRetry={onRetry}
                 showDetails={import.meta.env.MODE === 'development'}
             />
