@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 import type { SortInput, SortId } from '@/types/project.api.types';
 import styles from './ProjectTableHeader.module.scss';
@@ -12,14 +12,16 @@ export const ProjectTableHeader: React.FC<ProjectTableHeaderProps> = ({
                                                                           onSort,
                                                                           currentSort = []
                                                                       }) => {
-    const getAriaSort = (column: SortId): "none" | "ascending" | "descending" => {
-        const sortItem = currentSort.find(s => s.id === column);
-        if (!sortItem) return "none";
-        return sortItem.desc ? "descending" : "ascending";
-    };
+    const sortState = useMemo(() => new Map(currentSort.map(item => [item.id, item])), [currentSort]);
 
-    const getSortIcon = (column: SortId) => {
-        const sortItem = currentSort.find(s => s.id === column);
+    const getAriaSort = useCallback((column: SortId): 'none' | 'ascending' | 'descending' => {
+        const sortItem = sortState.get(column);
+        if (!sortItem) return 'none';
+        return sortItem.desc ? 'descending' : 'ascending';
+    }, [sortState]);
+
+    const getSortIcon = useCallback((column: SortId) => {
+        const sortItem = sortState.get(column);
 
         if (!sortItem) {
             return <ArrowUpDown size={14} aria-hidden="true" />;
@@ -28,13 +30,27 @@ export const ProjectTableHeader: React.FC<ProjectTableHeaderProps> = ({
         return sortItem.desc
             ? <ArrowDown className={styles.sortActiveColor} size={14} aria-hidden="true" />
             : <ArrowUp className={styles.sortActiveColor} size={14} aria-hidden="true" />;
-    };
+    }, [sortState]);
 
-    const handleHeaderClick = (column: SortId) => {
-        if (onSort) {
-            onSort(column);
-        }
-    };
+    const handleHeaderClick = useCallback((column: SortId) => {
+        onSort?.(column);
+    }, [onSort]);
+
+    const renderSortableHeader = useCallback((column: SortId, label: string) => (
+        <th
+            scope="col"
+            className={`${styles.headerCell} ${styles.sortable}`}
+            aria-sort={getAriaSort(column)}
+        >
+            <button
+                type="button"
+                className={styles.sortButton}
+                onClick={() => handleHeaderClick(column)}
+            >
+                {label} {getSortIcon(column)}
+            </button>
+        </th>
+    ), [getAriaSort, getSortIcon, handleHeaderClick]);
 
     return (
         <thead>
@@ -42,19 +58,7 @@ export const ProjectTableHeader: React.FC<ProjectTableHeaderProps> = ({
             <th className={`${styles.headerCell} ${styles.imageHeader}`}></th>
             <th className={styles.headerCell}>Pavadinimas</th>
 
-            <th
-                scope="col"
-                className={`${styles.headerCell} ${styles.sortable}`}
-                aria-sort={getAriaSort("initial_rating")}
-            >
-                <button
-                    type="button"
-                    className={styles.sortButton}
-                    onClick={() => handleHeaderClick("initial_rating")}
-                >
-                    Reitingas {getSortIcon("initial_rating")}
-                </button>
-            </th>
+            {renderSortableHeader('initial_rating', 'Reitingas')}
 
             <th className={styles.headerCell}>Šalis</th>
             <th className={styles.headerCell}>LTV</th>
@@ -63,35 +67,11 @@ export const ProjectTableHeader: React.FC<ProjectTableHeaderProps> = ({
             <th className={styles.headerCell}>Time</th>
             <th className={styles.headerCell}>Users</th>
 
-            <th
-                scope="col"
-                className={`${styles.headerCell} ${styles.sortable}`}
-                aria-sort={getAriaSort("credit_duration")}
-            >
-                <button
-                    type="button"
-                    className={styles.sortButton}
-                    onClick={() => handleHeaderClick("credit_duration")}
-                >
-                    Date {getSortIcon("credit_duration")}
-                </button>
-            </th>
+            {renderSortableHeader('credit_duration', 'Date')}
 
             <th className={styles.headerCell}>Progress bar</th>
 
-            <th
-                scope="col"
-                className={`${styles.headerCell} ${styles.sortable}`}
-                aria-sort={getAriaSort("basic_interest")}
-            >
-                <button
-                    type="button"
-                    className={styles.sortButton}
-                    onClick={() => handleHeaderClick("basic_interest")}
-                >
-                    Interest rate {getSortIcon("basic_interest")}
-                </button>
-            </th>
+            {renderSortableHeader('basic_interest', 'Interest rate')}
 
             <th className={styles.headerCell}></th>
         </tr>

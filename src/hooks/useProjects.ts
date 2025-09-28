@@ -42,7 +42,7 @@ export function useProjects(params: QueryParams) {
             });
 
         return () => controller.abort();
-    }, [params.page, params.limit, params.sort, params.filters, refreshKey]);
+    }, [params, refreshKey]);
 
     const refetch = useCallback(() => {
         setRefreshKey(prev => prev + 1);
