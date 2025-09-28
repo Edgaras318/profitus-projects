@@ -11,6 +11,7 @@ interface ButtonProps {
     color?: string;
     icon?: React.ReactNode;
     iconPosition?: 'left' | 'right';
+    type?: 'button' | 'submit' | 'reset';
 }
 
 export default function Button({
@@ -22,7 +23,8 @@ export default function Button({
                                    className = '',
                                    color,
                                    icon,
-                                   iconPosition = 'left'
+                                   iconPosition = 'left',
+                                   type = 'button'
                                }: ButtonProps) {
     const buttonStyle = color && variant === 'ghost' ? {
         '--custom-color': color,
@@ -35,6 +37,7 @@ export default function Button({
             onClick={onClick}
             disabled={disabled}
             style={buttonStyle}
+            type={type}
         >
             {icon && iconPosition === 'left' && (
                 <span className={styles.icon}>{icon}</span>
