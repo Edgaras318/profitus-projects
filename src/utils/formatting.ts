@@ -25,8 +25,12 @@ export const formatInterestRate = (
         : `${basicInterest.toFixed(1)}%`;
 };
 
-export const formatDuration = (days?: number): string => {
-    return days ? `${days} d.` : '—';
+export const formatDuration = (days?: number | null): string => {
+    if (days !== undefined && days !== null && Number.isFinite(days)) {
+        return `${days} d.`;
+    }
+
+    return '—';
 };
 
 export const formatMonths = (months: number): string => {

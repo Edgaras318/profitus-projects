@@ -35,6 +35,9 @@ export const ProjectTableRow: React.FC<ProjectTableRowProps> = ({
         project.max_bonus_interest ?? undefined
     );
 
+    const parsedDaysToGetMoney = Number(project.days_to_get_money);
+    const daysToGetMoney = Number.isNaN(parsedDaysToGetMoney) ? undefined : parsedDaysToGetMoney;
+
     return (
         <tr className={styles.row}>
             {/* Project Image */}
@@ -87,7 +90,7 @@ export const ProjectTableRow: React.FC<ProjectTableRowProps> = ({
             {/* Time */}
             <td className={styles.cell}>
                 {project.status === 'open_for_investments'
-                    ? formatDuration(Number(project.days_to_get_money))  // Fix: Convert string to number
+                    ? formatDuration(daysToGetMoney)
                     : project.funded_duration}
             </td>
 
