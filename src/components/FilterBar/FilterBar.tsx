@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import { Filter as FilterIcon, ChevronUp } from "lucide-react";
 import styles from "./FilterBar.module.scss";
 
@@ -19,11 +19,15 @@ export default function FilterBar({
                                       className,
                                       toggleButtonRef,
                                   }: FilterBarProps) {
+    const contentId = useId();
+
     return (
         <div className={`${styles.wrapper} ${className || ""}`}>
             <button
                 type="button"
                 aria-expanded={isOpen}
+                aria-controls={contentId}
+                aria-haspopup="true"
                 onClick={onToggle}
                 className={styles.toggleButton}
                 ref={toggleButtonRef}
@@ -37,11 +41,14 @@ export default function FilterBar({
                 />
             </button>
 
-            {isOpen && (
-                <div className={styles.content}>
-                    {children ?? <PlaceholderFilters />}
-                </div>
-            )}
+            <div
+                id={contentId}
+                className={styles.content}
+                hidden={!isOpen}
+                aria-hidden={!isOpen}
+            >
+                {children ?? <PlaceholderFilters />}
+            </div>
         </div>
     );
 }
