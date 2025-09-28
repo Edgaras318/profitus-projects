@@ -39,20 +39,117 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                                                            onClearFilters
                                                        }) => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    // Fix: Allow null in the type definition for strict TypeScript compliance
     const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
+
+    const closeFilters = () => {
+        setIsFilterOpen(false);
+        toggleButtonRef.current?.focus();
+    };
 
     const handleSave = () => {
         onSaveFilters();
-        setIsFilterOpen(false);
-        toggleButtonRef.current?.focus();
+        closeFilters();
     };
 
     const handleClear = () => {
         onClearFilters();
-        setIsFilterOpen(false);
-        toggleButtonRef.current?.focus();
+        closeFilters();
     };
+
+    const renderCountryFilter = () => (
+        <div className={styles.checkboxGrid}>
+            {COUNTRY_OPTIONS.map(country => (
+                <Checkbox
+                    key={country.code}
+                    label={country.label}
+                    checked={tempFilters.countries.includes(country.code)}
+                    onChange={(checked) => onCountryChange(country.code, checked)}
+                    icon={<CountryFlag countryCode={country.code} size="small" />}
+                />
+            ))}
+        </div>
+    );
+
+    const renderRatingFilter = () => (
+        <div className={styles.checkboxGrid}>
+            {RATING_OPTIONS.map(rating => (
+                <Checkbox
+                    key={rating}
+                    label={rating}
+                    checked={tempFilters.ratings.includes(rating)}
+                    onChange={(checked) => onRatingChange(rating, checked)}
+                />
+            ))}
+        </div>
+    );
+
+    const renderPurposeFilter = () => (
+        <div className={styles.filterContent}>
+            <Select
+                options={PURPOSE_OPTIONS}
+                value={tempFilters.purpose}
+                onChange={(value) => onTempFilterChange('purpose', value)}
+                placeholder="Visos paskirtys"
+                fullWidth
+            />
+        </div>
+    );
+
+    const renderCreditDurationFilter = () => (
+        <div className={styles.rangeInputs}>
+            <InputNumber
+                placeholder="Min"
+                value={tempFilters.creditDurationMin}
+                onChange={(value) =>
+                    onTempFilterChange('creditDurationMin', value === '' ? '' : String(value))
+                }
+                min={0}
+                fullWidth
+            />
+            <InputNumber
+                placeholder="Max"
+                value={tempFilters.creditDurationMax}
+                onChange={(value) =>
+                    onTempFilterChange('creditDurationMax', value === '' ? '' : String(value))
+                }
+                min={0}
+                fullWidth
+            />
+        </div>
+    );
+
+    const renderCampaignIdFilter = () => (
+        <div className={styles.filterContent}>
+            <InputText
+                placeholder="Įveskite kampanijos ID"
+                value={tempFilters.campaignId}
+                onChange={(value) => onTempFilterChange('campaignId', value)}
+                icon={<Hash size={16} />}
+                fullWidth
+            />
+        </div>
+    );
+
+    const renderPrivateIdFilter = () => (
+        <div className={styles.filterContent}>
+            <InputText
+                placeholder="Įveskite privatų ID"
+                value={tempFilters.privateId}
+                onChange={(value) => onTempFilterChange('privateId', value)}
+                icon={<Search size={16} />}
+                fullWidth
+            />
+        </div>
+    );
+
+    const accordionSections = [
+        { id: 0, label: 'Šalis', renderContent: renderCountryFilter },
+        { id: 1, label: 'Pradinis reitingas', renderContent: renderRatingFilter },
+        { id: 2, label: 'Paskirtis / Tipas', renderContent: renderPurposeFilter },
+        { id: 3, label: 'Kredito trukmė (mėn.)', renderContent: renderCreditDurationFilter },
+        { id: 4, label: 'Kampanijos ID', renderContent: renderCampaignIdFilter },
+        { id: 5, label: 'Privatus ID', renderContent: renderPrivateIdFilter }
+    ];
 
     return (
         <FilterBar
@@ -66,121 +163,16 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({
                     activeItems={accordionActiveItems}
                     onItemsChange={onAccordionChange}
                 >
-                    <AccordionItem index={0}>
-                        <AccordionHeader index={0}>
-                            Šalis
-                        </AccordionHeader>
-                        <AccordionContent index={0}>
-                            <div className={styles.checkboxGrid}>
-                                {COUNTRY_OPTIONS.map(country => (
-                                    <Checkbox
-                                        key={country.code}
-                                        label={country.label}
-                                        checked={tempFilters.countries.includes(country.code)}
-                                        onChange={(checked) => onCountryChange(country.code, checked)}
-                                        icon={<CountryFlag countryCode={country.code} size="small" />}
-                                    />
-                                ))}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem index={1}>
-                        <AccordionHeader index={1}>
-                            Pradinis reitingas
-                        </AccordionHeader>
-                        <AccordionContent index={1}>
-                            <div className={styles.checkboxGrid}>
-                                {RATING_OPTIONS.map(rating => (
-                                    <Checkbox
-                                        key={rating}
-                                        label={rating}
-                                        checked={tempFilters.ratings.includes(rating)}
-                                        onChange={(checked) => onRatingChange(rating, checked)}
-                                    />
-                                ))}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem index={2}>
-                        <AccordionHeader index={2}>
-                            Paskirtis / Tipas
-                        </AccordionHeader>
-                        <AccordionContent index={2}>
-                            <div className={styles.filterContent}>
-                                <Select
-                                    options={PURPOSE_OPTIONS}
-                                    value={tempFilters.purpose}
-                                    onChange={(value) => onTempFilterChange('purpose', value)}
-                                    placeholder="Visos paskirtys"
-                                    fullWidth
-                                />
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem index={3}>
-                        <AccordionHeader index={3}>
-                            Kredito trukmė (mėn.)
-                        </AccordionHeader>
-                        <AccordionContent index={3}>
-                            <div className={styles.rangeInputs}>
-                                <InputNumber
-                                    placeholder="Min"
-                                    value={tempFilters.creditDurationMin}
-                                    onChange={(value) =>
-                                        onTempFilterChange('creditDurationMin', value === '' ? '' : String(value))
-                                    }
-                                    min={0}
-                                    fullWidth
-                                />
-                                <InputNumber
-                                    placeholder="Max"
-                                    value={tempFilters.creditDurationMax}
-                                    onChange={(value) =>
-                                        onTempFilterChange('creditDurationMax', value === '' ? '' : String(value))
-                                    }
-                                    min={0}
-                                    fullWidth
-                                />
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem index={4}>
-                        <AccordionHeader index={4}>
-                            Kampanijos ID
-                        </AccordionHeader>
-                        <AccordionContent index={4}>
-                            <div className={styles.filterContent}>
-                                <InputText
-                                    placeholder="Įveskite kampanijos ID"
-                                    value={tempFilters.campaignId}
-                                    onChange={(value) => onTempFilterChange('campaignId', value)}
-                                    icon={<Hash size={16} />}
-                                    fullWidth
-                                />
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem index={5}>
-                        <AccordionHeader index={5}>
-                            Privatus ID
-                        </AccordionHeader>
-                        <AccordionContent index={5}>
-                            <div className={styles.filterContent}>
-                                <InputText
-                                    placeholder="Įveskite privatų ID"
-                                    value={tempFilters.privateId}
-                                    onChange={(value) => onTempFilterChange('privateId', value)}
-                                    icon={<Search size={16} />}
-                                    fullWidth
-                                />
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
+                    {accordionSections.map(({ id, label, renderContent }) => (
+                        <AccordionItem index={id} key={id}>
+                            <AccordionHeader index={id}>
+                                {label}
+                            </AccordionHeader>
+                            <AccordionContent index={id}>
+                                {renderContent()}
+                            </AccordionContent>
+                        </AccordionItem>
+                    ))}
                 </Accordion>
 
                 <div className={styles.filterActions}>
