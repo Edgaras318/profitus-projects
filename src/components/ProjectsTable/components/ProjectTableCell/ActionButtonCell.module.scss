@@ -18,6 +18,11 @@
     }
   }
 
+  &.defaultButton {
+    // Default state relies on base button styles. This selector provides a stable
+    // hook without altering the appearance.
+  }
+
   &.comingSoonButton {
     button {
       background: #ffa726 !important;
