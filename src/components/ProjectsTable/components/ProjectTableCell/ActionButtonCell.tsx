@@ -16,6 +16,8 @@ export const ActionButtonCell: React.FC<ActionButtonCellProps> = ({
                                                                       onAction
                                                                   }) => {
     const config = PROJECT_STATUS_CONFIG[status] || PROJECT_STATUS_CONFIG.open_for_investments;
+    const statusClass = config.className ? styles[config.className] : '';
+    const wrapperClassName = [styles.buttonWrapper, statusClass].filter(Boolean).join(' ');
 
     const handleClick = () => {
         if (!config.disabled && onAction) {
@@ -24,7 +26,7 @@ export const ActionButtonCell: React.FC<ActionButtonCellProps> = ({
     };
 
     return (
-        <div className={`${styles.buttonWrapper} ${styles[config.className]}`}>
+        <div className={wrapperClassName}>
             <Button
                 size="small"
                 disabled={config.disabled}

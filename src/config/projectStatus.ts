@@ -39,6 +39,6 @@ export const PROJECT_STATUS_CONFIG: Record<ProjectStatusEnum, StatusConfig> = {
     open_for_investments: {
         text: 'Investuokite',
         disabled: false,
-        className: ''
+        className: 'defaultButton'
     }
 } as const;
